@@ -25,7 +25,7 @@ export async function POST(
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    const accessToken = getAccessTokenFromSession(session);
+    const accessToken = await getAccessTokenFromSession(session);
 
     const result = await submitMentorResponse(
       surveyId,

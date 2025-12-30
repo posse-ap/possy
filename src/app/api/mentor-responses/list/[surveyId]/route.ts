@@ -22,7 +22,7 @@ export async function GET(
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    const accessToken = getAccessTokenFromSession(session);
+    const accessToken = await getAccessTokenFromSession(session);
 
     const responses = await listMentorResponses(
       surveyId,
