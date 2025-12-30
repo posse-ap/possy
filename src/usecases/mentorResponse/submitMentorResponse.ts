@@ -14,6 +14,7 @@ type SubmitMentorResponseResult = {
 export async function submitMentorResponse(
   surveyId: string,
   input: MentorResponseInput,
+  accessToken?: string,
 ): Promise<SubmitMentorResponseResult> {
   try {
     // 1. バリデーション: スロットの重複チェック
@@ -41,10 +42,11 @@ export async function submitMentorResponse(
         input.mentorName,
       );
 
-    // 4. DB保存（upsert: 既存なら更新、なければ作成）
+    // 4. DB保存（upsert: 既存なら更新、なければ作成）スロット情報込み
     const savedResponse = await mentorResponseRepository.upsert(
       surveyId,
       input.mentorName,
+      input.slots,
     );
 
     if (!savedResponse) {
@@ -54,35 +56,43 @@ export async function submitMentorResponse(
       };
     }
 
-    // 5. Spreadsheet反映
-    const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);
-    if (spreadsheetId) {
-      const sheetsSuccess = await sheetsRepository.appendMentorResponseRows(
-        spreadsheetId,
-        input.mentorName,
-        input.slots,
-        savedResponse.submitted_at,
-      );
-
-      if (!sheetsSuccess) {
-        console.warn("Spreadsheetへの書き込みに失敗しました");
-      }
-    }
-
-    // 6. Googleカレンダーに仮押さえイベント作成
-    for (const slot of input.slots) {
-      const eventId = await calendarRepository.createHoldEvent(
-        slot.date,
-        slot.startTime,
-        slot.endTime,
-        `[仮押さえ] ${input.mentorName} - ${survey.title}`,
-      );
-
-      if (!eventId) {
-        console.warn(
-          `カレンダーイベントの作成に失敗: ${slot.date} ${slot.startTime}-${slot.endTime}`,
+    // 5. Spreadsheet反映（バックアップ用・アクセストークンがある場合のみ）
+    if (accessToken) {
+      const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);
+      if (spreadsheetId) {
+        const sheetsSuccess = await sheetsRepository.appendMentorResponseRows(
+          spreadsheetId,
+          input.mentorName,
+          input.slots,
+          savedResponse.submitted_at,
+          accessToken,
         );
+
+        if (!sheetsSuccess) {
+          console.warn("Spreadsheetへの書き込みに失敗しました（バックアップ）");
+        }
       }
+
+      // 6. Googleカレンダーに仮押さえイベント作成
+      for (const slot of input.slots) {
+        const eventId = await calendarRepository.createHoldEvent(
+          slot.date,
+          slot.startTime,
+          slot.endTime,
+          `[仮押さえ] ${input.mentorName} - ${survey.title}`,
+          accessToken,
+        );
+
+        if (!eventId) {
+          console.warn(
+            `カレンダーイベントの作成に失敗: ${slot.date} ${slot.startTime}-${slot.endTime}`,
+          );
+        }
+      }
+    } else {
+      console.info(
+        "アクセストークンがないため、Google API連携をスキップしました",
+      );
     }
 
     return {
