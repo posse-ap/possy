@@ -1,191 +1,194 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { Slot, SlotInput } from "@/models/slot/slot";
-import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
-import type { CalendarEvent } from "@/models/calendar/calendarEvent";
-import {
-	mentorResponseSchema,
-	type MentorResponseFormData,
-	validateNoOverlap,
-	checkNewSlotOverlap,
-} from "@/models/mentorResponse/mentorResponseValidators";
 import { CalendarView } from "@/components/model/calendar/CalendarView";
 import { EventList } from "@/components/model/calendar/EventList";
 import { SlotList } from "@/components/model/slot/SlotList";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import type { CalendarEvent } from "@/models/calendar/calendarEvent";
+import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
+import {
+  checkNewSlotOverlap,
+  type MentorResponseFormData,
+  mentorResponseSchema,
+  validateNoOverlap,
+} from "@/models/mentorResponse/mentorResponseValidators";
+import type { Slot } from "@/models/slot/slot";
 
 type MentorResponseFormProps = {
-	onSubmit: (data: MentorResponseInput) => void;
-	isSubmitting?: boolean;
-	googleEvents?: CalendarEvent[];
+  onSubmit: (data: MentorResponseInput) => void;
+  isSubmitting?: boolean;
+  googleEvents?: CalendarEvent[];
 };
 
 export function MentorResponseForm({
-	onSubmit,
-	isSubmitting = false,
-	googleEvents = [],
+  onSubmit,
+  isSubmitting = false,
+  googleEvents = [],
 }: MentorResponseFormProps) {
-	const [slots, setSlots] = useState<Slot[]>([]);
-	const [validationError, setValidationError] = useState<string>("");
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [validationError, setValidationError] = useState<string>("");
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<MentorResponseFormData>({
-		resolver: zodResolver(mentorResponseSchema),
-	});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<MentorResponseFormData>({
+    resolver: zodResolver(mentorResponseSchema),
+  });
 
-	const handleDateTimeSelect = (date: string, startTime: string) => {
-		// 2時間後の終了時刻を計算
-		const [hours, minutes] = startTime.split(":").map(Number);
-		const endHours = (hours + 2) % 24;
-		const endTime = `${String(endHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  const handleDateTimeSelect = (date: string, startTime: string) => {
+    // 2時間後の終了時刻を計算
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const endHours = (hours + 2) % 24;
+    const endTime = `${String(endHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 
-		// 既に同じ時間帯が選択されているか確認
-		const existingSlot = slots.find(
-			(slot) =>
-				slot.date === date &&
-				slot.startTime === startTime &&
-				slot.endTime === endTime,
-		);
+    // 既に同じ時間帯が選択されているか確認
+    const existingSlot = slots.find(
+      (slot) =>
+        slot.date === date &&
+        slot.startTime === startTime &&
+        slot.endTime === endTime,
+    );
 
-		if (existingSlot) {
-			// 既に選択されている場合は削除
-			setSlots((prev) => prev.filter((slot) => slot.id !== existingSlot.id));
-			setValidationError("");
-		} else {
-			// 新しいスロットが既存のスロットと重複しないかチェック
-			const newSlotData = { date, startTime, endTime };
-			const overlapCheck = checkNewSlotOverlap(newSlotData, slots);
+    if (existingSlot) {
+      // 既に選択されている場合は削除
+      setSlots((prev) => prev.filter((slot) => slot.id !== existingSlot.id));
+      setValidationError("");
+    } else {
+      // 新しいスロットが既存のスロットと重複しないかチェック
+      const newSlotData = { date, startTime, endTime };
+      const overlapCheck = checkNewSlotOverlap(newSlotData, slots);
 
-			if (overlapCheck.hasOverlap) {
-				// 重複エラーを表示
-				setValidationError(
-					overlapCheck.message || "選択した時間が既存のスロットと重複しています",
-				);
-				return;
-			}
+      if (overlapCheck.hasOverlap) {
+        // 重複エラーを表示
+        setValidationError(
+          overlapCheck.message ||
+            "選択した時間が既存のスロットと重複しています",
+        );
+        return;
+      }
 
-			// 新しいスロットを追加
-			const newSlot: Slot = {
-				id: crypto.randomUUID(),
-				date,
-				startTime,
-				endTime,
-			};
-			setSlots((prev) => [...prev, newSlot]);
-			setValidationError("");
-		}
-	};
+      // 新しいスロットを追加
+      const newSlot: Slot = {
+        id: crypto.randomUUID(),
+        date,
+        startTime,
+        endTime,
+      };
+      setSlots((prev) => [...prev, newSlot]);
+      setValidationError("");
+    }
+  };
 
-	const handleRemoveSlot = (id: string) => {
-		setSlots((prev) => prev.filter((slot) => slot.id !== id));
-		setValidationError("");
-	};
+  const handleRemoveSlot = (id: string) => {
+    setSlots((prev) => prev.filter((slot) => slot.id !== id));
+    setValidationError("");
+  };
 
-	const onFormSubmit = (data: MentorResponseFormData) => {
-		// スロットのバリデーション
-		const validation = validateNoOverlap(slots);
+  const onFormSubmit = (data: MentorResponseFormData) => {
+    // スロットのバリデーション
+    const validation = validateNoOverlap(slots);
 
-		if (!validation.isValid) {
-			setValidationError(validation.message || "バリデーションエラーが発生しました");
-			return;
-		}
+    if (!validation.isValid) {
+      setValidationError(
+        validation.message || "バリデーションエラーが発生しました",
+      );
+      return;
+    }
 
-		onSubmit({
-			mentorName: data.mentorName,
-			slots,
-		});
-	};
+    onSubmit({
+      mentorName: data.mentorName,
+      slots,
+    });
+  };
 
-	return (
-		<form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
-			<Card>
-				<CardHeader>
-					<CardTitle>基本情報</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="space-y-2">
-						<Label htmlFor="mentorName">お名前 *</Label>
-						<Input
-							id="mentorName"
-							type="text"
-							placeholder="山田 太郎"
-							{...register("mentorName")}
-							className={errors.mentorName ? "border-red-500" : ""}
-						/>
-						{errors.mentorName && (
-							<p className="text-sm text-red-500">
-								{errors.mentorName.message}
-							</p>
-						)}
-					</div>
-				</CardContent>
-			</Card>
+  return (
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>基本情報</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <Label htmlFor="mentorName">お名前 *</Label>
+            <Input
+              id="mentorName"
+              type="text"
+              placeholder="山田 太郎"
+              {...register("mentorName")}
+              className={errors.mentorName ? "border-red-500" : ""}
+            />
+            {errors.mentorName && (
+              <p className="text-sm text-red-500">
+                {errors.mentorName.message}
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-			{validationError && (
-				<div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
-					<div className="flex items-start gap-3">
-						<Badge variant="default" className="bg-red-600 text-white">
-							エラー
-						</Badge>
-						<div className="flex-1">
-							<p className="text-sm font-medium text-red-800">
-								時間の重複が検出されました
-							</p>
-							<p className="text-sm text-red-700 mt-1">{validationError}</p>
-						</div>
-					</div>
-				</div>
-			)}
+      {validationError && (
+        <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+          <div className="flex items-start gap-3">
+            <Badge variant="default" className="bg-red-600 text-white">
+              エラー
+            </Badge>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-red-800">
+                時間の重複が検出されました
+              </p>
+              <p className="text-sm text-red-700 mt-1">{validationError}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
-			<div className="grid gap-6 lg:grid-cols-3">
-				<div className="lg:col-span-2 space-y-4">
-					<div>
-						<h3 className="text-lg font-semibold">
-							参加可能な日時を選択してください
-						</h3>
-						<p className="text-sm text-gray-500">
-							カレンダーから空いている時間をクリックしてください（2時間単位）
-						</p>
-					</div>
-					<CalendarView
-						googleEvents={googleEvents}
-						selectedSlots={slots}
-						onDateTimeSelect={handleDateTimeSelect}
-					/>
-				</div>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-4">
+          <div>
+            <h3 className="text-lg font-semibold">
+              参加可能な日時を選択してください
+            </h3>
+            <p className="text-sm text-gray-500">
+              カレンダーから空いている時間をクリックしてください（2時間単位）
+            </p>
+          </div>
+          <CalendarView
+            googleEvents={googleEvents}
+            selectedSlots={slots}
+            onDateTimeSelect={handleDateTimeSelect}
+          />
+        </div>
 
-				<div className="space-y-4">
-					<EventList events={googleEvents} title="あなたの予定" />
-					<div>
-						<h3 className="text-sm font-semibold text-gray-700 mb-3">
-							選択済みスロット
-						</h3>
-						<SlotList slots={slots} onRemove={handleRemoveSlot} />
-					</div>
-				</div>
-			</div>
+        <div className="space-y-4">
+          <EventList events={googleEvents} title="あなたの予定" />
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+              選択済みスロット
+            </h3>
+            <SlotList slots={slots} onRemove={handleRemoveSlot} />
+          </div>
+        </div>
+      </div>
 
-			<div className="flex justify-end gap-4 pt-4">
-				<Button
-					type="submit"
-					variant="primary"
-					size="lg"
-					disabled={isSubmitting || slots.length === 0}
-					className="w-full sm:w-auto"
-				>
-					{isSubmitting ? "送信中..." : "回答を送信"}
-				</Button>
-			</div>
-		</form>
-	);
+      <div className="flex justify-end gap-4 pt-4">
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          disabled={isSubmitting || slots.length === 0}
+          className="w-full sm:w-auto cursor-pointer"
+        >
+          {isSubmitting ? "送信中..." : "回答を送信"}
+        </Button>
+      </div>
+    </form>
+  );
 }
