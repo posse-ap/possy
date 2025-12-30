@@ -9,6 +9,15 @@ type EventListProps = {
   title?: string;
 };
 
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+  const weekday = weekdays[date.getDay()];
+  return `${month}/${day}(${weekday})`;
+}
+
 export function EventList({ events, title = "既存の予定" }: EventListProps) {
   if (events.length === 0) {
     return (
@@ -68,13 +77,4 @@ export function EventList({ events, title = "既存の予定" }: EventListProps)
       </div>
     </div>
   );
-}
-
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-  const weekday = weekdays[date.getDay()];
-  return `${month}/${day}(${weekday})`;
 }
