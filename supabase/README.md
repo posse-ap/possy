@@ -37,10 +37,10 @@ npm run supabase:status
 
 After starting Supabase, you can access:
 
-- **Supabase Studio**: http://127.0.0.1:54323
-- **API URL**: http://127.0.0.1:54321
-- **Database**: postgresql://postgres:postgres@127.0.0.1:54322/postgres
-- **Inbucket (Email Testing)**: http://127.0.0.1:54324
+- **Supabase Studio**: http://localhost:54323
+- **API URL**: http://localhost:54321
+- **Database**: postgresql://postgres:postgres@localhost:54322/postgres
+- **Inbucket (Email Testing)**: http://localhost:54324
 
 ## Database Migrations
 
