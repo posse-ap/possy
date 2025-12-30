@@ -1,11 +1,5 @@
 import { getCalendarClient } from "@/libs/googleApi";
-
-export type CalendarEvent = {
-  id: string;
-  summary: string;
-  start: string; // ISO 8601
-  end: string; // ISO 8601
-};
+import type { CalendarEvent } from "@/models/calendar/calendarEvent";
 
 export const calendarRepository = {
   /**
@@ -22,30 +16,57 @@ export const calendarRepository = {
     try {
       const calendar = getCalendarClient(accessToken);
 
+      // 日付をJSTのISOString形式に変換
+      const startDateTime = new Date(`${startDate}T00:00:00+09:00`);
+      const endDateTime = new Date(`${endDate}T23:59:59+09:00`);
+
+      console.log("Fetching calendar events:", {
+        startDate,
+        endDate,
+        startDateTime: startDateTime.toISOString(),
+        endDateTime: endDateTime.toISOString(),
+      });
+
       const response = await calendar.events.list({
         calendarId: "primary",
-        timeMin: new Date(`${startDate}T00:00:00`).toISOString(),
-        timeMax: new Date(`${endDate}T23:59:59`).toISOString(),
+        timeMin: startDateTime.toISOString(),
+        timeMax: endDateTime.toISOString(),
         singleEvents: true,
         orderBy: "startTime",
+        timeZone: "Asia/Tokyo",
       });
 
       const events = response.data.items || [];
+      console.log(`Retrieved ${events.length} calendar events`);
 
       return events
         .filter((event) => event.start && event.end)
-        .map((event) => ({
-          id: event.id || "",
-          summary: event.summary || "(タイトルなし)",
-          start:
-            event.start?.dateTime ||
-            event.start?.date ||
-            new Date().toISOString(),
-          end:
-            event.end?.dateTime || event.end?.date || new Date().toISOString(),
-        }));
+        .map((event) => {
+          const startDateTime = event.start?.dateTime || event.start?.date || "";
+          const endDateTime = event.end?.dateTime || event.end?.date || "";
+          
+          // ISO 8601形式から日付と時刻を抽出（JSTで処理）
+          const startDate = new Date(startDateTime);
+          const endDate = new Date(endDateTime);
+          
+          // UTCからJSTに変換
+          const jstStart = new Date(startDate.getTime() + (9 * 60 * 60 * 1000));
+          const jstEnd = new Date(endDate.getTime() + (9 * 60 * 60 * 1000));
+          
+          return {
+            id: event.id || "",
+            title: event.summary || "(タイトルなし)",
+            date: startDate.toISOString().split("T")[0], // YYYY-MM-DD
+            startTime: `${String(startDate.getHours()).padStart(2, "0")}:${String(startDate.getMinutes()).padStart(2, "0")}`, // HH:mm
+            endTime: `${String(endDate.getHours()).padStart(2, "0")}:${String(endDate.getMinutes()).padStart(2, "0")}`, // HH:mm
+            isGoogleEvent: true,
+          };
+        });
     } catch (error) {
       console.error("Error fetching calendar events:", error);
+      if (error instanceof Error) {
+        console.error("Error details:", error.message);
+      }
       return [];
     }
   },

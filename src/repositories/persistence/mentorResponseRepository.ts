@@ -1,4 +1,4 @@
-import { supabase } from "@/libs/supabaseClient";
+import { getServerSupabaseClient, supabase } from "@/libs/supabaseClient";
 import type { Slot } from "@/models/slot/slot";
 
 type MentorResponseRecord = {
@@ -11,7 +11,11 @@ type MentorResponseRecord = {
 
 export const mentorResponseRepository = {
   async findBySurveyId(surveyId: string): Promise<MentorResponseRecord[]> {
-    const { data, error } = await supabase
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { data, error } = await client
       .from("mentor_responses")
       .select("*")
       .eq("survey_id", surveyId)
@@ -37,7 +41,11 @@ export const mentorResponseRepository = {
     surveyId: string,
     mentorName: string,
   ): Promise<MentorResponseRecord | null> {
-    const { data, error } = await supabase
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { data, error } = await client
       .from("mentor_responses")
       .select("*")
       .eq("survey_id", surveyId)
@@ -66,7 +74,11 @@ export const mentorResponseRepository = {
     mentorName: string,
     slots: Slot[],
   ): Promise<MentorResponseRecord | null> {
-    const { data, error } = await supabase
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { data, error } = await client
       .from("mentor_responses")
       .insert({
         survey_id: surveyId,
@@ -95,7 +107,11 @@ export const mentorResponseRepository = {
     mentorName: string,
     slots: Slot[],
   ): Promise<MentorResponseRecord | null> {
-    const { data, error } = await supabase
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { data, error } = await client
       .from("mentor_responses")
       .upsert(
         {

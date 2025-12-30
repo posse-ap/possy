@@ -1,9 +1,14 @@
-import { supabase } from "@/libs/supabaseClient";
+import { getServerSupabaseClient, supabase } from "@/libs/supabaseClient";
 import type { Survey, SurveyInput } from "@/models/survey/survey";
 
 export const surveyRepository = {
   async findById(id: string): Promise<Survey | null> {
-    const { data, error } = await supabase
+    // Server-sideの場合はgetServerSupabaseClient()を使用
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { data, error } = await client
       .from("surveys")
       .select("*")
       .eq("id", id)
@@ -28,7 +33,11 @@ export const surveyRepository = {
   },
 
   async findAll(): Promise<Survey[]> {
-    const { data, error } = await supabase
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { data, error } = await client
       .from("surveys")
       .select("*")
       .order("created_at", { ascending: false });
@@ -52,7 +61,14 @@ export const surveyRepository = {
   },
 
   async create(input: SurveyInput): Promise<Survey | null> {
-    const { data, error } = await supabase
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    // SpreadsheetURLからIDを抽出
+    const spreadsheetId = extractSpreadsheetId(input.spreadsheetUrl);
+
+    const { data, error } = await client
       .from("surveys")
       .insert({
         title: input.title,
@@ -60,6 +76,7 @@ export const surveyRepository = {
         start_date: input.startDate,
         end_date: input.endDate,
         spreadsheet_url: input.spreadsheetUrl,
+        spreadsheet_id: spreadsheetId,
       })
       .select()
       .single();
@@ -81,7 +98,11 @@ export const surveyRepository = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const { error } = await supabase.from("surveys").delete().eq("id", id);
+    const client = typeof window === "undefined" 
+      ? await getServerSupabaseClient()
+      : supabase;
+
+    const { error } = await client.from("surveys").delete().eq("id", id);
 
     if (error) {
       console.error("Error deleting survey:", error);
@@ -91,3 +112,8 @@ export const surveyRepository = {
     return true;
   },
 };
+
+function extractSpreadsheetId(url: string): string | null {
+  const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  return match ? match[1] : null;
+}
