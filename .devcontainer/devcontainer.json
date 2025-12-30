@@ -24,13 +24,7 @@
       ]
     }
   },
-  "forwardPorts": [
-    3000,
-    54321,
-    54322,
-    54323,
-    54324
-  ],
+  "forwardPorts": [3000, 54321, 54322, 54323, 54324],
   "portsAttributes": {
     "3000": {
       "label": "Next.js App",
