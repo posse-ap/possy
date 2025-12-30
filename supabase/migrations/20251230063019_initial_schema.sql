@@ -21,7 +21,6 @@ CREATE TABLE mentor_responses (
   survey_id UUID REFERENCES surveys(id) ON DELETE CASCADE,
   mentor_name TEXT NOT NULL,
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
-  spreadsheet_row_number INT,
   UNIQUE(survey_id, mentor_name)
 );
 
