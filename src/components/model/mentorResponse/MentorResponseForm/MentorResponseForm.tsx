@@ -9,6 +9,8 @@ import type { CalendarEvent } from "@/models/calendar/calendarEvent";
 import {
 	mentorResponseSchema,
 	type MentorResponseFormData,
+	validateNoOverlap,
+	checkNewSlotOverlap,
 } from "@/models/mentorResponse/mentorResponseValidators";
 import { CalendarView } from "@/components/model/calendar/CalendarView";
 import { EventList } from "@/components/model/calendar/EventList";
@@ -17,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 
 type MentorResponseFormProps = {
 	onSubmit: (data: MentorResponseInput) => void;
@@ -30,6 +33,7 @@ export function MentorResponseForm({
 	googleEvents = [],
 }: MentorResponseFormProps) {
 	const [slots, setSlots] = useState<Slot[]>([]);
+	const [validationError, setValidationError] = useState<string>("");
 
 	const {
 		register,
@@ -56,7 +60,20 @@ export function MentorResponseForm({
 		if (existingSlot) {
 			// 既に選択されている場合は削除
 			setSlots((prev) => prev.filter((slot) => slot.id !== existingSlot.id));
+			setValidationError("");
 		} else {
+			// 新しいスロットが既存のスロットと重複しないかチェック
+			const newSlotData = { date, startTime, endTime };
+			const overlapCheck = checkNewSlotOverlap(newSlotData, slots);
+
+			if (overlapCheck.hasOverlap) {
+				// 重複エラーを表示
+				setValidationError(
+					overlapCheck.message || "選択した時間が既存のスロットと重複しています",
+				);
+				return;
+			}
+
 			// 新しいスロットを追加
 			const newSlot: Slot = {
 				id: crypto.randomUUID(),
@@ -65,16 +82,21 @@ export function MentorResponseForm({
 				endTime,
 			};
 			setSlots((prev) => [...prev, newSlot]);
+			setValidationError("");
 		}
 	};
 
 	const handleRemoveSlot = (id: string) => {
 		setSlots((prev) => prev.filter((slot) => slot.id !== id));
+		setValidationError("");
 	};
 
 	const onFormSubmit = (data: MentorResponseFormData) => {
-		if (slots.length === 0) {
-			alert("少なくとも1つのスロットを追加してください");
+		// スロットのバリデーション
+		const validation = validateNoOverlap(slots);
+
+		if (!validation.isValid) {
+			setValidationError(validation.message || "バリデーションエラーが発生しました");
 			return;
 		}
 
@@ -108,6 +130,22 @@ export function MentorResponseForm({
 					</div>
 				</CardContent>
 			</Card>
+
+			{validationError && (
+				<div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+					<div className="flex items-start gap-3">
+						<Badge variant="default" className="bg-red-600 text-white">
+							エラー
+						</Badge>
+						<div className="flex-1">
+							<p className="text-sm font-medium text-red-800">
+								時間の重複が検出されました
+							</p>
+							<p className="text-sm text-red-700 mt-1">{validationError}</p>
+						</div>
+					</div>
+				</div>
+			)}
 
 			<div className="grid gap-6 lg:grid-cols-3">
 				<div className="lg:col-span-2 space-y-4">
