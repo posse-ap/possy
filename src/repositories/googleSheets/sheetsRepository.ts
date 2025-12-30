@@ -28,10 +28,6 @@ export const sheetsRepository = {
     try {
       const sheets = getSheetsClient(accessToken);
 
-      // ヘッダー行が存在するか確認し、なければ作成
-      const sheetName = "回答データ";
-      await this.ensureSheetExists(spreadsheetId, sheetName, accessToken);
-
       // データ行を作成
       const rows = slots.map((slot) => [
         mentorName,
@@ -44,7 +40,7 @@ export const sheetsRepository = {
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${sheetName}!A:E`,
+        range: `A:E`,
         valueInputOption: "RAW",
         requestBody: {
           values: rows,
@@ -91,64 +87,6 @@ export const sheetsRepository = {
     } catch (error) {
       console.error("Error reading from spreadsheet:", error);
       return [];
-    }
-  },
-
-  /**
-   * シートが存在することを確認し、なければ作成してヘッダーを設定
-   */
-  async ensureSheetExists(
-    spreadsheetId: string,
-    sheetName: string,
-    accessToken: string,
-  ): Promise<void> {
-    try {
-      const sheets = getSheetsClient(accessToken);
-
-      // スプレッドシートのメタデータを取得
-      const spreadsheet = await sheets.spreadsheets.get({
-        spreadsheetId,
-      });
-
-      // シートが存在するか確認
-      const sheetExists = spreadsheet.data.sheets?.some(
-        (sheet) => sheet.properties?.title === sheetName,
-      );
-
-      if (!sheetExists) {
-        // シートを作成
-        await sheets.spreadsheets.batchUpdate({
-          spreadsheetId,
-          requestBody: {
-            requests: [
-              {
-                addSheet: {
-                  properties: {
-                    title: sheetName,
-                  },
-                },
-              },
-            ],
-          },
-        });
-
-        // ヘッダー行を追加
-        await sheets.spreadsheets.values.update({
-          spreadsheetId,
-          range: `${sheetName}!A1:E1`,
-          valueInputOption: "RAW",
-          requestBody: {
-            values: [
-              ["メンター名", "日付", "開始時刻", "終了時刻", "送信日時"],
-            ],
-          },
-        });
-
-        console.log(`Created sheet "${sheetName}" with headers`);
-      }
-    } catch (error) {
-      console.error("Error ensuring sheet exists:", error);
-      throw error;
     }
   },
 
