@@ -25,10 +25,9 @@ export function CalendarView({
     return new Date(today.setDate(diff));
   });
 
-  // 表示する時間帯（8:00 - 22:00）
-  const timeSlots = Array.from({ length: 15 }, (_, i) => {
-    const hour = 8 + i;
-    return `${String(hour).padStart(2, "0")}:00`;
+  // 表示する時間帯（0:00 - 23:00、24時間表示）
+  const timeSlots = Array.from({ length: 24 }, (_, i) => {
+    return `${String(i).padStart(2, "0")}:00`;
   });
 
   // 週の日付を取得
