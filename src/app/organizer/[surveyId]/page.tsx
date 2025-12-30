@@ -25,7 +25,7 @@ export default async function OrganizerSurveyDetailPage({ params }: PageProps) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const accessToken = getAccessTokenFromSession(session);
+  const accessToken = await getAccessTokenFromSession(session);
 
   // スプレッドシートIDを抽出
   const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);

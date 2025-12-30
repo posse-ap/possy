@@ -22,6 +22,8 @@ export default async function MentorSurveyPage({ params }: PageProps) {
       surveyId={surveyId}
       surveyTitle={survey.title}
       surveyDescription={survey.description}
+      startDate={survey.startDate}
+      endDate={survey.endDate}
     />
   );
 }
