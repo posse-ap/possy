@@ -1,63 +1,65 @@
+import { Calendar, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Calendar, Users } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 
 export default function Home() {
-	return (
-		<div className="min-h-screen bg-gray-50 py-16 px-4">
-			<div className="mx-auto max-w-4xl">
-				<div className="text-center mb-12">
-					<h1 className="text-5xl font-bold mb-4">Possy</h1>
-					<p className="text-xl text-gray-600">
-						メンターの日程調整を簡単に
-					</p>
-				</div>
+  return (
+    <div className="min-h-screen bg-gray-50 py-16 px-4">
+      <div className="mx-auto max-w-4xl">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold mb-4">Possy</h1>
+          <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
+        </div>
 
-				<div className="grid gap-6 md:grid-cols-2">
-					<Card className="border-2 hover:shadow-lg transition-shadow">
-						<CardHeader>
-							<div className="flex items-center gap-3 mb-2">
-								<Calendar className="h-8 w-8" />
-								<CardTitle className="text-2xl">メンター</CardTitle>
-							</div>
-							<CardDescription>
-								参加可能な日時を入力してください
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<Link href="/mentor/test-survey-123" className="block">
-								<Button variant="primary" className="w-full">
-									アンケートに回答する
-								</Button>
-							</Link>
-						</CardContent>
-					</Card>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="border-2 hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center gap-3 mb-2">
+                <Calendar className="h-8 w-8" />
+                <CardTitle className="text-2xl">メンター</CardTitle>
+              </div>
+              <CardDescription>
+                参加可能な日時を入力してください
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/mentor/test-survey-123" className="block">
+                <Button variant="primary" className="w-full cursor-pointer">
+                  アンケートに回答する
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
 
-					<Card className="border-2 hover:shadow-lg transition-shadow">
-						<CardHeader>
-							<div className="flex items-center gap-3 mb-2">
-								<Users className="h-8 w-8" />
-								<CardTitle className="text-2xl">運営</CardTitle>
-							</div>
-							<CardDescription>
-								アンケートの作成と回答管理
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<Link href="/organizer" className="block">
-								<Button variant="outline" className="w-full">
-									運営画面（準備中）
-								</Button>
-							</Link>
-						</CardContent>
-					</Card>
-				</div>
+          <Card className="border-2 hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center gap-3 mb-2">
+                <Users className="h-8 w-8" />
+                <CardTitle className="text-2xl">運営</CardTitle>
+              </div>
+              <CardDescription>アンケートの作成と回答管理</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/organizer" className="block">
+                <Button variant="outline" className="w-full cursor-pointer">
+                  運営画面を開く
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
 
-				<div className="mt-12 text-center text-sm text-gray-500">
-					<p>開発中のプレビュー版です</p>
-				</div>
-			</div>
-		</div>
-	);
+        <div className="mt-12 text-center text-sm text-gray-500">
+          <p>開発中のプレビュー版です</p>
+        </div>
+      </div>
+    </div>
+  );
 }
