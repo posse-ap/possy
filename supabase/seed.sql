@@ -7,7 +7,7 @@ TRUNCATE mentor_responses, surveys CASCADE;
 -- Insert surveys
 INSERT INTO surveys (id, title, description, start_date, end_date, spreadsheet_url, spreadsheet_id, created_at) VALUES
   (
-    'test-survey-123',
+    '00000000-0000-0000-0000-000000000001',
     '2025年新歓メンター日程調整',
     '新歓イベントのメンター参加可能日程を教えてください',
     '2025-01-01',
@@ -17,7 +17,7 @@ INSERT INTO surveys (id, title, description, start_date, end_date, spreadsheet_u
     '2024-12-20T10:00:00Z'
   ),
   (
-    'survey-456',
+    '00000000-0000-0000-0000-000000000002',
     '春季イベントメンター募集',
     '春季イベントのメンター参加可能日程調査',
     '2025-03-01',
@@ -27,7 +27,7 @@ INSERT INTO surveys (id, title, description, start_date, end_date, spreadsheet_u
     '2024-12-25T15:00:00Z'
   ),
   (
-    'survey-789',
+    '00000000-0000-0000-0000-000000000003',
     '夏季インターンメンター募集',
     '夏季インターンシップのメンター参加可能日程を教えてください',
     '2025-06-01',
@@ -41,36 +41,36 @@ INSERT INTO surveys (id, title, description, start_date, end_date, spreadsheet_u
 -- Note: Actual slot data is stored in Google Sheets
 INSERT INTO mentor_responses (id, survey_id, mentor_name, submitted_at, spreadsheet_row_number) VALUES
   (
-    'r1',
-    'test-survey-123',
+    '10000000-0000-0000-0000-000000000001',
+    '00000000-0000-0000-0000-000000000001',
     '山田 太郎',
     '2025-01-01T10:00:00Z',
     2
   ),
   (
-    'r2',
-    'test-survey-123',
+    '10000000-0000-0000-0000-000000000002',
+    '00000000-0000-0000-0000-000000000001',
     '佐藤 花子',
     '2025-01-01T11:30:00Z',
     3
   ),
   (
-    'r3',
-    'test-survey-123',
+    '10000000-0000-0000-0000-000000000003',
+    '00000000-0000-0000-0000-000000000001',
     '鈴木 次郎',
     '2025-01-02T09:00:00Z',
     4
   ),
   (
-    'r4',
-    'survey-456',
+    '10000000-0000-0000-0000-000000000004',
+    '00000000-0000-0000-0000-000000000002',
     '田中 三郎',
     '2025-01-03T14:00:00Z',
     2
   ),
   (
-    'r5',
-    'survey-456',
+    '10000000-0000-0000-0000-000000000005',
+    '00000000-0000-0000-0000-000000000002',
     '高橋 美咲',
     '2025-01-03T16:00:00Z',
     3
