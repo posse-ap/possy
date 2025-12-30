@@ -8,7 +8,7 @@ echo "Installing npm dependencies..."
 npm install
 
 echo "Installing GitHub Copilot CLI..."
-npm install -g @github/copilot
+gh extension install github/gh-copilot
 
 echo "Installing Supabase CLI..."
 brew install supabase/tap/supabase
