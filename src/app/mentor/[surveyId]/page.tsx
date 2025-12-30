@@ -1,4 +1,6 @@
+import { notFound } from "next/navigation";
 import { MentorSurvey } from "@/components/page/MentorSurvey";
+import { getSurvey } from "@/usecases/survey";
 
 type PageProps = {
   params: Promise<{
@@ -9,11 +11,17 @@ type PageProps = {
 export default async function MentorSurveyPage({ params }: PageProps) {
   const { surveyId } = await params;
 
+  const survey = await getSurvey(surveyId);
+
+  if (!survey) {
+    notFound();
+  }
+
   return (
     <MentorSurvey
       surveyId={surveyId}
-      surveyTitle="メンター日程アンケート"
-      surveyDescription="参加可能な日時を選択してください。開始時刻から2時間単位で自動計算されます。"
+      surveyTitle={survey.title}
+      surveyDescription={survey.description}
     />
   );
 }
