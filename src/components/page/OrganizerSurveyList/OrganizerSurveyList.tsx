@@ -4,15 +4,17 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SurveySummaryCard } from "@/components/model/survey/SurveySummaryCard";
 import { Button } from "@/components/ui/Button";
-import { dummyMentorResponses } from "@/models/mentorResponse/dummyResponses";
-import { dummySurveys } from "@/models/survey/dummySurveys";
+import type { Survey } from "@/models/survey/survey";
 
-export function OrganizerSurveyList() {
-  // 各アンケートの回答数を計算
-  const getResponseCount = (surveyId: string) => {
-    return dummyMentorResponses.filter((r) => r.surveyId === surveyId).length;
-  };
+type SurveyWithCount = Survey & {
+  responseCount: number;
+};
 
+type OrganizerSurveyListProps = {
+  surveys: SurveyWithCount[];
+};
+
+export function OrganizerSurveyList({ surveys }: OrganizerSurveyListProps) {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="mx-auto max-w-6xl space-y-6">
@@ -32,16 +34,16 @@ export function OrganizerSurveyList() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          {dummySurveys.map((survey) => (
+          {surveys.map((survey) => (
             <SurveySummaryCard
               key={survey.id}
               survey={survey}
-              responseCount={getResponseCount(survey.id)}
+              responseCount={survey.responseCount}
             />
           ))}
         </div>
 
-        {dummySurveys.length === 0 && (
+        {surveys.length === 0 && (
           <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
             <p className="text-gray-500 mb-4">
               まだアンケートが作成されていません

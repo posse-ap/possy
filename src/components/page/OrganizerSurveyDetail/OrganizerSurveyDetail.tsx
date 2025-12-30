@@ -13,25 +13,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { dummyMentorResponses } from "@/models/mentorResponse/dummyResponses";
 import {
   copyToClipboard,
   formatSlotsForGoogleForm,
   getAllUniqueSlotsFromResponses,
 } from "@/models/slot/slotUtils";
 import type { Survey } from "@/models/survey/survey";
+import type { MentorResponseWithSlots } from "@/usecases/mentorResponse";
 
 type OrganizerSurveyDetailProps = {
   survey: Survey;
+  responses: MentorResponseWithSlots[];
 };
 
-export function OrganizerSurveyDetail({ survey }: OrganizerSurveyDetailProps) {
+export function OrganizerSurveyDetail({
+  survey,
+  responses,
+}: OrganizerSurveyDetailProps) {
   const [copied, setCopied] = useState(false);
-
-  // このアンケートの回答を取得
-  const responses = dummyMentorResponses.filter(
-    (r) => r.surveyId === survey.id,
-  );
 
   // すべてのスロットを昇順で取得
   const allSlots = getAllUniqueSlotsFromResponses(responses);

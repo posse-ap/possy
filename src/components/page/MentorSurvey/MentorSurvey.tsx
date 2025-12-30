@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/Card";
 import type { CalendarEvent } from "@/models/calendar/calendarEvent";
-import { dummyGoogleEvents } from "@/models/calendar/dummyEvents";
 import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
 
 type MentorSurveyProps = {
@@ -25,7 +24,7 @@ export function MentorSurvey({
   surveyId,
   surveyTitle = "メンター日程アンケート",
   surveyDescription = "参加可能な日時を選択してください。カレンダーから空いている時間をクリックしてください。",
-  googleEvents = dummyGoogleEvents,
+  googleEvents = [],
 }: MentorSurveyProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,18 +32,27 @@ export function MentorSurvey({
   const handleSubmit = async (data: MentorResponseInput) => {
     setIsSubmitting(true);
     try {
-      console.log("Survey ID:", surveyId);
-      console.log("Response Data:", data);
+      const response = await fetch(`/api/mentor-responses/${surveyId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      // TODO: API呼び出しをここに実装
-      // await submitMentorResponse(surveyId, data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "送信に失敗しました");
+      }
 
-      // 成功時に完了画面へ遷移
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       router.push(`/mentor/${surveyId}/done`);
     } catch (error) {
       console.error("送信エラー:", error);
-      alert("送信に失敗しました。もう一度お試しください。");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "送信に失敗しました。もう一度お試しください。";
+      alert(message);
     } finally {
       setIsSubmitting(false);
     }
