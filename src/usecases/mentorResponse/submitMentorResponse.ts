@@ -60,16 +60,26 @@ export async function submitMentorResponse(
     if (accessToken) {
       const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);
       if (spreadsheetId) {
-        const sheetsSuccess = await sheetsRepository.appendMentorResponseRows(
-          spreadsheetId,
-          input.mentorName,
-          input.slots,
-          savedResponse.submitted_at,
-          accessToken,
-        );
-
-        if (!sheetsSuccess) {
-          console.warn("Spreadsheetへの書き込みに失敗しました（バックアップ）");
+        try {
+          await sheetsRepository.appendMentorResponseRows(
+            spreadsheetId,
+            input.mentorName,
+            input.slots,
+            input.email,
+            input.posse,
+            input.generation,
+            input.university,
+            input.availableCapacity,
+            savedResponse.submitted_at,
+            accessToken,
+          );
+        } catch (error) {
+          // sheetIdも欲しいので、エラーメッセージを加工して返す
+          const errorMessage = `Spreadsheetへの書き込みに失敗しました sheetId: ${spreadsheetId} error: ${error instanceof Error ? error.message : error}`;
+          return {
+            success: false,
+            message: errorMessage,
+          };
         }
       }
 

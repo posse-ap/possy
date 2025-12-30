@@ -1,5 +1,6 @@
 import { getSheetsClient } from "@/libs/googleApi";
 import type { Slot } from "@/models/slot/slot";
+import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
 type SpreadsheetRow = {
   mentorName: string;
@@ -22,15 +23,33 @@ export const sheetsRepository = {
     spreadsheetId: string,
     mentorName: string,
     slots: Slot[],
+    email: string,
+    posse: Posse,
+    generation: Generation,
+    university: string,
+    availableCapacity: AvailableCapacity,
     submittedAt: string,
     accessToken: string,
   ): Promise<boolean> {
     try {
       const sheets = getSheetsClient(accessToken);
 
+      // データを書き込むシートが存在しないということは、新歓担当がメンター用アンケートを作成したときに登録したシートを消したりしている可能性がある
+      // それは回答者であるメンターにはどうすることもできないので、エラーとして扱いログを残す
+      if (sheets.length === 0) {
+        throw new Error(
+          "回答を書き込むシートが存在しませんでした、新歓担当に連絡してください",
+        );
+      }
+
       // データ行を作成
       const rows = slots.map((slot) => [
         mentorName,
+        email,
+        posse,
+        university,
+        generation,
+        availableCapacity,
         slot.date,
         slot.startTime,
         slot.endTime,
@@ -40,7 +59,7 @@ export const sheetsRepository = {
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `A:E`,
+        range: `A2:E`,
         valueInputOption: "RAW",
         requestBody: {
           values: rows,
@@ -68,26 +87,29 @@ export const sheetsRepository = {
   ): Promise<SpreadsheetRow[]> {
     try {
       const sheets = getSheetsClient(accessToken);
-      const sheetName = "回答データ";
 
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: `${sheetName}!A2:E`, // ヘッダー行をスキップ
+        range: `A2:E`, // ヘッダー行をスキップ
       });
 
       const rows = response.data.values || [];
 
       return rows.map((row) => ({
-        mentorName: row[0] || "",
-        date: row[1] || "",
-        startTime: row[2] || "",
-        endTime: row[3] || "",
-        submittedAt: row[4] || "",
+        submittedAt: row[0] || "",
+        email: row[1] || "",
+        mentorName: row[2] || "",
+        generation: row[3] || "",
+        posse: row[4] || "",
+        university: row[5] || "",
+        availableCapacity: row[6] || "",
+        date: row[7] || "",
+        startTime: row[8] || "",
+        endTime: row[9] || "",
       }));
     } catch (error) {
       console.error("Error reading from spreadsheet:", error);
       return [];
     }
   },
-
 };
