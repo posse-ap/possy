@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { OrganizerSurveyDetail } from "@/components/page/OrganizerSurveyDetail";
-import { dummySurveys } from "@/models/survey/dummySurveys";
+import { listMentorResponses } from "@/usecases/mentorResponse";
+import { getSurvey } from "@/usecases/survey";
 
 type PageProps = {
   params: Promise<{
@@ -11,12 +12,13 @@ type PageProps = {
 export default async function OrganizerSurveyDetailPage({ params }: PageProps) {
   const { surveyId } = await params;
 
-  // アンケートを取得（実際にはAPIから取得）
-  const survey = dummySurveys.find((s) => s.id === surveyId);
+  const survey = await getSurvey(surveyId);
 
   if (!survey) {
     notFound();
   }
 
-  return <OrganizerSurveyDetail survey={survey} />;
+  const responses = await listMentorResponses(surveyId);
+
+  return <OrganizerSurveyDetail survey={survey} responses={responses} />;
 }
