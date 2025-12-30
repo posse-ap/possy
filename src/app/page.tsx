@@ -14,16 +14,18 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-4">
       <div className="mx-auto max-w-4xl">
-        <div className="text-center mb-12 flex flex-col md:flex-row md:items-center gap-6 justify-center">
-          <div className="">
-            <h1 className="text-5xl font-bold mb-4">Possy</h1>
-            <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
-          </div>
-          <div className="flex justify-center md:justify-start">
-            <LoginButton />
-          </div>
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold mb-4">Possy</h1>
+          <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
         </div>
 
+        {/* Login Button */}
+        <div className="flex justify-center mb-12">
+          <LoginButton />
+        </div>
+
+        {/* Feature Cards */}
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -60,6 +62,7 @@ export default function Home() {
           </Card>
         </div>
 
+        {/* Footer */}
         <div className="mt-12 text-center text-sm text-gray-500">
           <p>開発中のプレビュー版です</p>
         </div>
