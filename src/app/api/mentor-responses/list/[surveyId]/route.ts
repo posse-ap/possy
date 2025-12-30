@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
+import { getAccessTokenFromSession } from "@/libs/googleApi";
+import { getServerSupabaseClient } from "@/libs/supabaseClient";
 import { listMentorResponses } from "@/usecases/mentorResponse";
+import { getSurvey } from "@/usecases/survey";
 
 export async function GET(
   _request: Request,
@@ -7,7 +10,25 @@ export async function GET(
 ) {
   try {
     const { surveyId } = await params;
-    const responses = await listMentorResponses(surveyId);
+
+    // Surveyを取得してスプレッドシートIDを得る
+    const survey = await getSurvey(surveyId);
+    const spreadsheetId = survey
+      ? extractSpreadsheetId(survey.spreadsheetUrl)
+      : null;
+
+    // Supabaseセッションからアクセストークンを取得
+    const supabase = await getServerSupabaseClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const accessToken = getAccessTokenFromSession(session);
+
+    const responses = await listMentorResponses(
+      surveyId,
+      spreadsheetId || undefined,
+      accessToken || undefined,
+    );
 
     return NextResponse.json(responses);
   } catch (error) {
@@ -17,4 +38,9 @@ export async function GET(
       { status: 500 },
     );
   }
+}
+
+function extractSpreadsheetId(url: string): string | null {
+  const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  return match ? match[1] : null;
 }

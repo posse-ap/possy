@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getAccessTokenFromSession } from "@/libs/googleApi";
+import { getServerSupabaseClient } from "@/libs/supabaseClient";
 import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
 import { submitMentorResponse } from "@/usecases/mentorResponse";
 
@@ -18,7 +20,18 @@ export async function POST(
       );
     }
 
-    const result = await submitMentorResponse(surveyId, body);
+    // Supabaseセッションからアクセストークンを取得
+    const supabase = await getServerSupabaseClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const accessToken = getAccessTokenFromSession(session);
+
+    const result = await submitMentorResponse(
+      surveyId,
+      body,
+      accessToken || undefined,
+    );
 
     if (!result.success) {
       return NextResponse.json(
