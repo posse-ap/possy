@@ -1,5 +1,6 @@
-import { Calendar, LogIn, Users } from "lucide-react";
+import { Calendar, Users } from "lucide-react";
 import Link from "next/link";
+import { LoginButton } from "@/components/model/Auth";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -13,30 +14,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 py-16 px-4">
       <div className="mx-auto max-w-4xl">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4">Possy</h1>
-          <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
-        </div>
-
-        {/* ログインボタン */}
-        <div className="mb-8 text-center">
-          <Card className="border-2 bg-blue-50">
-            <CardContent className="py-6">
-              <p className="text-sm text-gray-600 mb-4">
-                アンケートに回答または運営画面を利用するには、Googleアカウントでログインしてください
-              </p>
-              <Link href="/api/auth/google">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="cursor-pointer gap-2"
-                >
-                  <LogIn className="h-5 w-5" />
-                  Googleでログイン
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+        <div className="text-center mb-12 flex flex-col md:flex-row md:items-center gap-6 justify-center">
+          <div className="">
+            <h1 className="text-5xl font-bold mb-4">Possy</h1>
+            <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
+          </div>
+          <div className="flex justify-center md:justify-start">
+            <LoginButton />
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

@@ -17,9 +17,9 @@ echo "Starting Supabase..."
 supabase start
 
 echo "Supabase is running!"
-echo "  - Studio: http://127.0.0.1:54323"
-echo "  - API URL: http://127.0.0.1:54321"
-echo "  - DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres"
-echo "  - Inbucket (Email Testing): http://127.0.0.1:54324"
+echo "  - Studio: http://localhost:54323"
+echo "  - API URL: http://localhost:54321"
+echo "  - DB URL: postgresql://postgres:postgres@localhost:54322/postgres"
+echo "  - Inbucket (Email Testing): http://localhost:54324"
 
 echo "Setup complete!"
