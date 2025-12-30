@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { google } from "googleapis";
 
 /**
@@ -6,9 +7,9 @@ import { google } from "googleapis";
  */
 export function getGoogleOAuth2Client(accessToken: string) {
   const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI,
+    process.env.SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID,
+    process.env.SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET,
+    process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI,
   );
 
   oauth2Client.setCredentials({
@@ -21,10 +22,18 @@ export function getGoogleOAuth2Client(accessToken: string) {
 /**
  * Supabaseのセッションからアクセストークンを取得
  */
-export function getAccessTokenFromSession(
+export async function getAccessTokenFromSession(
   session: { provider_token?: string | null } | null,
-): string | null {
-  return session?.provider_token || null;
+): Promise<string | null> {
+  const tokenFromSession = session?.provider_token || null;
+  if (tokenFromSession) return tokenFromSession;
+
+  try {
+    const cookieStore = await cookies();
+    return cookieStore.get("google_provider_token")?.value || null;
+  } catch {
+    return null;
+  }
 }
 
 /**
