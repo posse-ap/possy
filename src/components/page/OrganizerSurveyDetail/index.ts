@@ -1,0 +1,1 @@
+export { OrganizerSurveyDetail } from "./OrganizerSurveyDetail";
