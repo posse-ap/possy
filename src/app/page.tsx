@@ -1,4 +1,4 @@
-import { Calendar, Users } from "lucide-react";
+import { Calendar, LogIn, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import {
@@ -18,6 +18,27 @@ export default function Home() {
           <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
         </div>
 
+        {/* ログインボタン */}
+        <div className="mb-8 text-center">
+          <Card className="border-2 bg-blue-50">
+            <CardContent className="py-6">
+              <p className="text-sm text-gray-600 mb-4">
+                アンケートに回答または運営画面を利用するには、Googleアカウントでログインしてください
+              </p>
+              <Link href="/api/auth/google">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="cursor-pointer gap-2"
+                >
+                  <LogIn className="h-5 w-5" />
+                  Googleでログイン
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -30,11 +51,9 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/mentor/test-survey-123" className="block">
-                <Button variant="primary" className="w-full cursor-pointer">
-                  アンケートに回答する
-                </Button>
-              </Link>
+              <p className="text-sm text-gray-500">
+                ログイン後、アンケートURLからアクセスしてください
+              </p>
             </CardContent>
           </Card>
 
