@@ -5,11 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Slot, SlotInput } from "@/models/slot/slot";
 import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
+import type { CalendarEvent } from "@/models/calendar/calendarEvent";
 import {
 	mentorResponseSchema,
 	type MentorResponseFormData,
 } from "@/models/mentorResponse/mentorResponseValidators";
-import { SlotEditor } from "@/components/model/slot/SlotEditor";
+import { CalendarView } from "@/components/model/calendar/CalendarView";
+import { EventList } from "@/components/model/calendar/EventList";
 import { SlotList } from "@/components/model/slot/SlotList";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -19,11 +21,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 type MentorResponseFormProps = {
 	onSubmit: (data: MentorResponseInput) => void;
 	isSubmitting?: boolean;
+	googleEvents?: CalendarEvent[];
 };
 
 export function MentorResponseForm({
 	onSubmit,
 	isSubmitting = false,
+	googleEvents = [],
 }: MentorResponseFormProps) {
 	const [slots, setSlots] = useState<Slot[]>([]);
 
@@ -35,12 +39,33 @@ export function MentorResponseForm({
 		resolver: zodResolver(mentorResponseSchema),
 	});
 
-	const handleAddSlot = (slotInput: SlotInput) => {
-		const newSlot: Slot = {
-			id: crypto.randomUUID(),
-			...slotInput,
-		};
-		setSlots((prev) => [...prev, newSlot]);
+	const handleDateTimeSelect = (date: string, startTime: string) => {
+		// 2時間後の終了時刻を計算
+		const [hours, minutes] = startTime.split(":").map(Number);
+		const endHours = (hours + 2) % 24;
+		const endTime = `${String(endHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+
+		// 既に同じ時間帯が選択されているか確認
+		const existingSlot = slots.find(
+			(slot) =>
+				slot.date === date &&
+				slot.startTime === startTime &&
+				slot.endTime === endTime,
+		);
+
+		if (existingSlot) {
+			// 既に選択されている場合は削除
+			setSlots((prev) => prev.filter((slot) => slot.id !== existingSlot.id));
+		} else {
+			// 新しいスロットを追加
+			const newSlot: Slot = {
+				id: crypto.randomUUID(),
+				date,
+				startTime,
+				endTime,
+			};
+			setSlots((prev) => [...prev, newSlot]);
+		}
 	};
 
 	const handleRemoveSlot = (id: string) => {
@@ -84,21 +109,32 @@ export function MentorResponseForm({
 				</CardContent>
 			</Card>
 
-			<div className="space-y-4">
-				<div>
-					<h3 className="text-lg font-semibold">参加可能な日時を追加</h3>
-					<p className="text-sm text-gray-500">
-						開始時刻から2時間枠で自動計算されます
-					</p>
+			<div className="grid gap-6 lg:grid-cols-3">
+				<div className="lg:col-span-2 space-y-4">
+					<div>
+						<h3 className="text-lg font-semibold">
+							参加可能な日時を選択してください
+						</h3>
+						<p className="text-sm text-gray-500">
+							カレンダーから空いている時間をクリックしてください（2時間単位）
+						</p>
+					</div>
+					<CalendarView
+						googleEvents={googleEvents}
+						selectedSlots={slots}
+						onDateTimeSelect={handleDateTimeSelect}
+					/>
 				</div>
-				<SlotEditor onAdd={handleAddSlot} />
-			</div>
 
-			<div className="space-y-4">
-				<div>
-					<h3 className="text-lg font-semibold">追加済みスロット</h3>
+				<div className="space-y-4">
+					<EventList events={googleEvents} title="あなたの予定" />
+					<div>
+						<h3 className="text-sm font-semibold text-gray-700 mb-3">
+							選択済みスロット
+						</h3>
+						<SlotList slots={slots} onRemove={handleRemoveSlot} />
+					</div>
 				</div>
-				<SlotList slots={slots} onRemove={handleRemoveSlot} />
 			</div>
 
 			<div className="flex justify-end gap-4 pt-4">
