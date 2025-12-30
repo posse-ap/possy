@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MentorResponseForm } from "@/components/model/mentorResponse/MentorResponseForm";
 import {
   Card,
@@ -17,17 +17,45 @@ type MentorSurveyProps = {
   surveyId: string;
   surveyTitle?: string;
   surveyDescription?: string;
-  googleEvents?: CalendarEvent[];
+  startDate: string;
+  endDate: string;
 };
 
 export function MentorSurvey({
   surveyId,
   surveyTitle = "メンター日程アンケート",
   surveyDescription = "参加可能な日時を選択してください。カレンダーから空いている時間をクリックしてください。",
-  googleEvents = [],
+  startDate,
+  endDate,
 }: MentorSurveyProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [googleEvents, setGoogleEvents] = useState<CalendarEvent[]>([]);
+  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
+
+  // Google Calendarイベントを取得
+  useEffect(() => {
+    async function fetchCalendarEvents() {
+      try {
+        const response = await fetch(
+          `/api/calendar/events?startDate=${startDate}&endDate=${endDate}`,
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          setGoogleEvents(data.events || []);
+        } else {
+          console.warn("Failed to fetch calendar events:", response.status);
+        }
+      } catch (error) {
+        console.warn("Error fetching calendar events:", error);
+      } finally {
+        setIsLoadingEvents(false);
+      }
+    }
+
+    fetchCalendarEvents();
+  }, [startDate, endDate]);
 
   const handleSubmit = async (data: MentorResponseInput) => {
     setIsSubmitting(true);
@@ -71,7 +99,11 @@ export function MentorSurvey({
           <CardContent>
             <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 text-sm text-blue-800">
               <p className="font-medium mb-2">
-                Googleカレンダーの予定を表示しています
+                {isLoadingEvents 
+                  ? "Googleカレンダーの予定を読み込み中..."
+                  : googleEvents.length > 0
+                  ? "Googleカレンダーの予定を表示しています"
+                  : "Googleカレンダーの予定が取得できませんでした（Google認証が必要です）"}
               </p>
               <ul className="space-y-1 text-blue-700">
                 <li>・青色のセルはあなたの既存予定です</li>

@@ -22,17 +22,30 @@ export function OrganizerSurveyCreate() {
   const handleSubmit = async (data: SurveyInput) => {
     setIsSubmitting(true);
     try {
-      console.log("Creating survey:", data);
+      const response = await fetch("/api/surveys", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      // TODO: API呼び出しをここに実装
-      // const newSurvey = await createSurvey(data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "作成に失敗しました");
+      }
 
-      // 成功時に一覧画面へ遷移
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await response.json();
+      console.log("Survey created:", result);
+
       router.push("/organizer");
     } catch (error) {
       console.error("作成エラー:", error);
-      alert("作成に失敗しました。もう一度お試しください。");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "作成に失敗しました。もう一度お試しください。";
+      alert(message);
     } finally {
       setIsSubmitting(false);
     }
