@@ -16,9 +16,11 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.47.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "googleapis": "^169.0.0",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "react": "19.2.3",
