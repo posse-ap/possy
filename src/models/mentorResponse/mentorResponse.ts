@@ -1,4 +1,4 @@
-import type { Slot } from "./slot";
+import type { Slot } from "@/models/slot/slot";
 
 export type MentorResponse = {
   id: string;
