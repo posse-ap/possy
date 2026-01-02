@@ -11,18 +11,21 @@ type CalendarViewProps = {
   googleEvents: CalendarEvent[];
   selectedSlots: Slot[];
   onDateTimeSelect: (date: string, startTime: string) => void;
+  startDate: string;
 };
 
 export function CalendarView({
   googleEvents,
   selectedSlots,
   onDateTimeSelect,
+  startDate,
 }: CalendarViewProps) {
+  // アンケートで回答を求められている週の開始日を計算
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
-    const today = new Date();
-    const day = today.getDay();
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1); // 月曜日を週の開始に
-    return new Date(today.setDate(diff));
+    const startDateObj = new Date(startDate);
+    const day = startDateObj.getDay();
+    const diff = startDateObj.getDate() - day + (day === 0 ? -6 : 1); // 月曜日を週の開始に
+    return new Date(startDateObj.setDate(diff));
   });
 
   // 表示する時間帯（8:00 - 23:00、24時間表示）
