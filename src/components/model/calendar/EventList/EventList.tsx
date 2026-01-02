@@ -1,8 +1,8 @@
 "use client";
 
-import { Calendar, Clock } from "lucide-react";
 import { cn } from "@/libs/utils";
 import type { CalendarEvent } from "@/models/calendar/calendarEvent";
+import { Calendar, Clock } from "lucide-react";
 
 type EventListProps = {
   events: CalendarEvent[];
@@ -45,7 +45,7 @@ export function EventList({ events, title = "既存の予定" }: EventListProps)
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
-      <div className="space-y-3">
+      <div className="space-y-3 max-h-96 overflow-y-auto">
         {sortedDates.map((date) => (
           <div key={date} className="space-y-2">
             <div className="text-xs font-medium text-gray-500">
