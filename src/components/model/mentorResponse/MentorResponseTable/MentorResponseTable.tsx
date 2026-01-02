@@ -1,11 +1,15 @@
 "use client";
 
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/Tooltip";
 import type { MentorResponse } from "@/models/mentorResponse/mentorResponse";
 import { formatSlotDisplay } from "@/models/slot/slotFormat";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 type MentorResponseTableProps = {
   responses: MentorResponse[];
@@ -13,30 +17,17 @@ type MentorResponseTableProps = {
 
 export function MentorResponseTable({ responses }: MentorResponseTableProps) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const toggleSort = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const toggleRow = (id: string) => {
-    setExpandedRows((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
-
   const sortedResponses = [...responses].sort((a, b) => {
-    // 名前でソート
+    // 回答数が多い順にソート
     if (sortOrder === "asc") {
-      return a.mentorName.localeCompare(b.mentorName);
+      return a.slots.length - b.slots.length;
     }
-    return b.mentorName.localeCompare(a.mentorName);
+    return b.slots.length - a.slots.length;
   });
 
   if (responses.length === 0) {
@@ -60,6 +51,21 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                   className="flex items-center gap-2 hover:text-black transition-colors"
                 >
                   メンター名
+                </button>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <button
+                  type="button"
+                  onClick={toggleSort}
+                  className="flex items-center gap-2 hover:text-black transition-colors"
+                >
+                  可能時間帯
+                  <Tooltip>
+                    <TooltipTrigger>?</TooltipTrigger>
+                    <TooltipContent>
+                      <p>メンターの可能時間帯の候補数でソートされます</p>
+                    </TooltipContent>
+                  </Tooltip>
                   {sortOrder === "asc" ? (
                     <ChevronUp className="h-4 w-4" />
                   ) : (
@@ -67,25 +73,10 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                   )}
                 </button>
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                回答日時スロット
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                回答日時
-              </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                詳細
-              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {sortedResponses.map((response) => {
-              const isExpanded = expandedRows.has(response.id);
-              const displaySlots = isExpanded
-                ? response.slots
-                : response.slots.slice(0, 2);
-              const hasMore = response.slots.length > 2;
-
               return (
                 <tr
                   key={response.id}
@@ -96,39 +87,12 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                   </td>
                   <td className="px-4 py-3 text-sm">
                     <div className="space-y-1">
-                      {displaySlots.map((slot) => (
-                        <Badge key={slot.id} variant="outline">
+                      {response.slots.map((slot) => (
+                        <Badge key={slot.id} variant="outline" className="m-1">
                           {formatSlotDisplay(slot)}
                         </Badge>
                       ))}
-                      {hasMore && !isExpanded && (
-                        <span className="text-xs text-gray-500">
-                          他{response.slots.length - 2}件...
-                        </span>
-                      )}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">
-                    {new Date(response.createdAt).toLocaleString("ja-JP", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {hasMore && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="cursor-pointer"
-                        onClick={() => toggleRow(response.id)}
-                      >
-                        {isExpanded ? "閉じる" : "すべて表示"}
-                      </Button>
-                    )}
                   </td>
                 </tr>
               );
