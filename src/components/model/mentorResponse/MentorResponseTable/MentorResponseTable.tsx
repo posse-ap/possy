@@ -1,6 +1,11 @@
 "use client";
 
 import { Badge } from "@/components/ui/Badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/Tooltip";
 import type { MentorResponse } from "@/models/mentorResponse/mentorResponse";
 import { formatSlotDisplay } from "@/models/slot/slotFormat";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -18,11 +23,11 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
   };
 
   const sortedResponses = [...responses].sort((a, b) => {
-    // 名前でソート
+    // 回答数が多い順にソート
     if (sortOrder === "asc") {
-      return a.mentorName.localeCompare(b.mentorName);
+      return a.slots.length - b.slots.length;
     }
-    return b.mentorName.localeCompare(a.mentorName);
+    return b.slots.length - a.slots.length;
   });
 
   if (responses.length === 0) {
@@ -46,18 +51,27 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                   className="flex items-center gap-2 hover:text-black transition-colors"
                 >
                   メンター名
+                </button>
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <button
+                  type="button"
+                  onClick={toggleSort}
+                  className="flex items-center gap-2 hover:text-black transition-colors"
+                >
+                  可能時間帯
+                  <Tooltip>
+                    <TooltipTrigger>?</TooltipTrigger>
+                    <TooltipContent>
+                      <p>メンターの可能時間帯の候補数でソートされます</p>
+                    </TooltipContent>
+                  </Tooltip>
                   {sortOrder === "asc" ? (
                     <ChevronUp className="h-4 w-4" />
                   ) : (
                     <ChevronDown className="h-4 w-4" />
                   )}
                 </button>
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                可能時間帯
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                回答日時
               </th>
             </tr>
           </thead>
@@ -79,15 +93,6 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                         </Badge>
                       ))}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">
-                    {new Date(response.createdAt).toLocaleString("ja-JP", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
                   </td>
                 </tr>
               );

@@ -1,8 +1,5 @@
 "use client";
 
-import { ArrowLeft, CheckCircle2, Copy, ExternalLink } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
 import { MentorResponseTable } from "@/components/model/mentorResponse/MentorResponseTable";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +17,9 @@ import {
 } from "@/models/slot/slotUtils";
 import type { Survey } from "@/models/survey/survey";
 import type { MentorResponseWithSlots } from "@/usecases/mentorResponse";
+import { ArrowLeft, CheckCircle2, Copy, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 type OrganizerSurveyDetailProps = {
   survey: Survey;
@@ -83,20 +83,6 @@ export function OrganizerSurveyDetail({
                   {new Date(survey.endDate).toLocaleDateString("ja-JP")}
                 </p>
               </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700">
-                  スプレッドシート
-                </p>
-                <a
-                  href={survey.spreadsheetUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                >
-                  リンクを開く
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
             </div>
 
             <div className="space-y-2">
@@ -108,16 +94,16 @@ export function OrganizerSurveyDetail({
                   readOnly
                   className="flex-1 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm"
                 />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleCopy(mentorUrl, "mentor")}
-                    className="cursor-pointer"
-                  >
-                    {copiedTarget === "mentor" ? (
-                      <>
-                        <CheckCircle2 className="h-5 w-5" />
-                        コピーしました！
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleCopy(mentorUrl, "mentor")}
+                  className="cursor-pointer"
+                >
+                  {copiedTarget === "mentor" ? (
+                    <>
+                      <CheckCircle2 className="h-5 w-5" />
+                      コピーしました！
                     </>
                   ) : (
                     <>
@@ -134,8 +120,9 @@ export function OrganizerSurveyDetail({
         <Card className="border-2">
           <CardHeader>
             <CardTitle>参加者用日程リスト（Googleフォーム用）</CardTitle>
-            <CardDescription>
-              以下のテキストをコピーして、Googleフォームのチェックボックスに一括ペーストできます
+            <CardDescription className="flex items-center gap-2 justify-between">
+              以下のテキストをコピーして、参加者募集用のGoogleフォームのチェックボックスに一括ペーストできます
+              <Badge variant="outline">{allSlots.length}件の候補（昇順）</Badge>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -164,27 +151,23 @@ export function OrganizerSurveyDetail({
                   </>
                 )}
               </Button>
-              <Badge variant="outline">
-                {allSlots.length}件のスロット（重複除外・昇順）
-              </Badge>
-            </div>
-            <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
-              <p className="font-medium mb-1">使い方</p>
-              <ol className="list-decimal list-inside space-y-1 text-blue-700">
-                <li>上のボタンでコピー</li>
-                <li>Googleフォームのチェックボックス項目を開く</li>
-                <li>「オプションを追加」の欄に貼り付け</li>
-                <li>自動で改行区切りで項目が追加されます</li>
-              </ol>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-2">
-          <CardHeader>
+          <CardHeader className="flex gap-2 flex-row items-center justify-between">
             <CardTitle>メンター回答一覧</CardTitle>
             <CardDescription>
-              メンター名をクリックしてソート順を変更できます
+              <a
+                href={survey.spreadsheetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              >
+                該当のスプレッドシートのリンクを開く
+                <ExternalLink className="h-3 w-3" />
+              </a>
             </CardDescription>
           </CardHeader>
           <CardContent>
