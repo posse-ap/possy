@@ -58,17 +58,19 @@ export function EventList({ events, title = "既存の予定" }: EventListProps)
                   <div
                     key={event.id}
                     className={cn(
-                      "flex items-center gap-2 rounded-md border p-2 text-sm",
+                      "flex items-center gap-1 rounded-md border p-2 text-sm",
                       event.isGoogleEvent
                         ? "border-blue-200 bg-blue-50"
                         : "border-gray-200 bg-white",
                     )}
                   >
                     <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="font-medium">
+                    <span className="font-medium w-25">
                       {event.startTime} - {event.endTime}
                     </span>
-                    <span className="text-gray-600">{event.title}</span>
+                    <span className="text-gray-600 text-ellipsis overflow-hidden whitespace-nowrap">
+                      {event.title}
+                    </span>
                   </div>
                 ))}
             </div>
