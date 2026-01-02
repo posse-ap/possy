@@ -96,21 +96,20 @@ export function OrganizerSurveyDetail({
                 />
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="default"
                   onClick={() => handleCopy(mentorUrl, "mentor")}
-                  className="cursor-pointer"
+                  className="cursor-pointer border-0"
                 >
-                  {copiedTarget === "mentor" ? (
-                    <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      コピーしました！
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      コピー
-                    </>
-                  )}
+                  <Copy className="h-4 w-4" />
+                  開く
+                </Button>
+                <Button
+                  variant="link"
+                  size="icon"
+                  className="cursor-pointer border-0"
+                  onClick={() => window.open(mentorUrl, "_blank")}
+                >
+                  <ExternalLink className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -133,11 +132,11 @@ export function OrganizerSurveyDetail({
             </div>
             <div className="flex items-center gap-3">
               <Button
-                variant="primary"
+                variant="outline"
                 size="lg"
                 onClick={() => handleCopy(googleFormText, "slots")}
                 disabled={allSlots.length === 0}
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-center gap-2 cursor-pointer border-0"
               >
                 {copiedTarget === "slots" ? (
                   <>
