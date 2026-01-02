@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { MentorResponseForm } from "@/components/model/mentorResponse/MentorResponseForm";
 import {
   Card,
@@ -12,6 +10,8 @@ import {
 } from "@/components/ui/Card";
 import type { CalendarEvent } from "@/models/calendar/calendarEvent";
 import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type MentorSurveyProps = {
   surveyId: string;
@@ -108,7 +108,7 @@ export function MentorSurvey({
               <ul className="space-y-1 text-blue-700">
                 <li>・青色のセルはあなたの既存予定です</li>
                 <li>・空いている時間をクリックして選択してください</li>
-                <li>・各スロットは2時間単位で自動計算されます</li>
+                <li>・各候補は2時間単位で自動計算されます</li>
                 <li>・週の切り替えボタンで異なる週を表示できます</li>
               </ul>
             </div>
@@ -119,6 +119,8 @@ export function MentorSurvey({
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
           googleEvents={googleEvents}
+          startDate={startDate}
+          endDate={endDate}
         />
       </div>
     </div>

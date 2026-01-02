@@ -1,14 +1,13 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { CalendarView } from "@/components/model/calendar/CalendarView";
 import { EventList } from "@/components/model/calendar/EventList";
 import { SlotList } from "@/components/model/slot/SlotList";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import {
   Select,
   SelectContent,
@@ -16,8 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select/select";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
 import type { CalendarEvent } from "@/models/calendar/calendarEvent";
 import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
 import {
@@ -27,18 +24,25 @@ import {
   validateNoOverlap,
 } from "@/models/mentorResponse/mentorResponseValidators";
 import type { Slot } from "@/models/slot/slot";
-import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
+import { formatTimeDisplay } from "@/utils/Time";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 type MentorResponseFormProps = {
   onSubmit: (data: MentorResponseInput) => void;
   isSubmitting?: boolean;
   googleEvents?: CalendarEvent[];
+  startDate: string;
+  endDate: string;
 };
 
 export function MentorResponseForm({
   onSubmit,
   isSubmitting = false,
   googleEvents = [],
+  startDate,
+  endDate,
 }: MentorResponseFormProps) {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [validationError, setValidationError] = useState<string>("");
@@ -157,9 +161,7 @@ export function MentorResponseForm({
                 className={errors.email ? "border-red-500" : ""}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">
-                  {errors.email.message}
-                </p>
+                <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
             </div>
 
@@ -186,7 +188,9 @@ export function MentorResponseForm({
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className={`w-full ${errors.posse ? "border-red-500" : ""}`}>
+                    <SelectTrigger
+                      className={`w-full ${errors.posse ? "border-red-500" : ""}`}
+                    >
                       <SelectValue placeholder="選択してください" />
                     </SelectTrigger>
                     <SelectContent>
@@ -198,9 +202,7 @@ export function MentorResponseForm({
                 )}
               />
               {errors.posse && (
-                <p className="text-sm text-red-500">
-                  {errors.posse.message}
-                </p>
+                <p className="text-sm text-red-500">{errors.posse.message}</p>
               )}
             </div>
 
@@ -211,7 +213,9 @@ export function MentorResponseForm({
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className={`w-full ${errors.generation ? "border-red-500" : ""}`}>
+                    <SelectTrigger
+                      className={`w-full ${errors.generation ? "border-red-500" : ""}`}
+                    >
                       <SelectValue placeholder="選択してください" />
                     </SelectTrigger>
                     <SelectContent>
@@ -231,19 +235,29 @@ export function MentorResponseForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="availableCapacity">何グループ対応できるか *</Label>
+              <Label htmlFor="availableCapacity">
+                何グループ対応できるか *
+              </Label>
               <Controller
                 name="availableCapacity"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className={`w-full ${errors.availableCapacity ? "border-red-500" : ""}`}>
+                    <SelectTrigger
+                      className={`w-full ${errors.availableCapacity ? "border-red-500" : ""}`}
+                    >
                       <SelectValue placeholder="選択してください" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1チームならできます">1チームならできます</SelectItem>
-                      <SelectItem value="2〜3チームならできます">2〜3チームならできます</SelectItem>
-                      <SelectItem value="3チーム以上できます">3チーム以上できます</SelectItem>
+                      <SelectItem value="1チームならできます">
+                        1チームならできます
+                      </SelectItem>
+                      <SelectItem value="2〜3チームならできます">
+                        2〜3チームならできます
+                      </SelectItem>
+                      <SelectItem value="3チーム以上できます">
+                        3チーム以上できます
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -278,11 +292,9 @@ export function MentorResponseForm({
         <div className="lg:col-span-2 space-y-4">
           <div>
             <h3 className="text-lg font-semibold">
-              参加可能な日時を選択してください
+              参加可能な日時を {formatTimeDisplay(startDate)} 〜{" "}
+              {formatTimeDisplay(endDate)} の期間から選択してください
             </h3>
-            <p className="text-sm text-gray-500">
-              カレンダーから空いている時間をクリックしてください（2時間単位）
-            </p>
           </div>
           <CalendarView
             googleEvents={googleEvents}
@@ -291,21 +303,16 @@ export function MentorResponseForm({
           />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 ">
           <EventList events={googleEvents} title="あなたの予定" />
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">
-              選択済みスロット
-            </h3>
-            <SlotList slots={slots} onRemove={handleRemoveSlot} />
-          </div>
+          <SlotList slots={slots} onRemove={handleRemoveSlot} />
         </div>
       </div>
 
       <div className="flex justify-end gap-4 pt-4">
         <Button
           type="submit"
-          variant="primary"
+          variant="outline"
           size="lg"
           disabled={isSubmitting || slots.length === 0}
           className="w-full sm:w-auto cursor-pointer"
