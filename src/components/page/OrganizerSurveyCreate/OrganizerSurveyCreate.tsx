@@ -1,9 +1,5 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { SurveyCreateForm } from "@/components/model/survey/SurveyCreateForm";
 import { Button } from "@/components/ui/Button";
 import {
@@ -14,6 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/Card";
 import type { SurveyInput } from "@/models/survey/survey";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function OrganizerSurveyCreate() {
   const router = useRouter();
@@ -71,7 +71,7 @@ export function OrganizerSurveyCreate() {
           <CardHeader>
             <CardTitle className="text-3xl">新規アンケート作成</CardTitle>
             <CardDescription className="text-base">
-              メンター日程調整アンケートを作成します
+              メンターの日程調整アンケートを作成します
             </CardDescription>
           </CardHeader>
           <CardContent>
