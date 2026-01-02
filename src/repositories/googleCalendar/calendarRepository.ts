@@ -37,28 +37,24 @@ export const calendarRepository = {
       });
 
       const events = response.data.items || [];
-      console.log(`Retrieved ${events.length} calendar events`);
 
       return events
-        .filter((event) => event.start && event.end)
+        .filter((event) => event.start && event.end && event.eventType !== "workingLocation")
         .map((event) => {
           const startDateTime = event.start?.dateTime || event.start?.date || "";
           const endDateTime = event.end?.dateTime || event.end?.date || "";
-          
           // ISO 8601形式から日付と時刻を抽出（JSTで処理）
           const startDate = new Date(startDateTime);
           const endDate = new Date(endDateTime);
-          
           // UTCからJSTに変換
           const jstStart = new Date(startDate.getTime() + (9 * 60 * 60 * 1000));
           const jstEnd = new Date(endDate.getTime() + (9 * 60 * 60 * 1000));
-          
           return {
             id: event.id || "",
             title: event.summary || "(タイトルなし)",
             date: startDate.toISOString().split("T")[0], // YYYY-MM-DD
-            startTime: `${String(startDate.getHours()).padStart(2, "0")}:${String(startDate.getMinutes()).padStart(2, "0")}`, // HH:mm
-            endTime: `${String(endDate.getHours()).padStart(2, "0")}:${String(endDate.getMinutes()).padStart(2, "0")}`, // HH:mm
+            startTime: `${String(jstStart.getHours()).padStart(2, "0")}:${String(jstStart.getMinutes()).padStart(2, "0")}`, // HH:mm
+            endTime: `${String(jstEnd.getHours()).padStart(2, "0")}:${String(jstEnd.getMinutes()).padStart(2, "0")}`, // HH:mm
             isGoogleEvent: true,
           };
         });
