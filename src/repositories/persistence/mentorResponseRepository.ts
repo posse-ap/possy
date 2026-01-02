@@ -1,19 +1,26 @@
 import { getServerSupabaseClient, supabase } from "@/libs/supabaseClient";
 import type { Slot } from "@/models/slot/slot";
+import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
 type MentorResponseRecord = {
   id: string;
   survey_id: string;
   mentor_name: string;
+  email: string;
+  posse: Posse;
+  university: string;
+  generation: Generation;
+  available_capacity: AvailableCapacity;
   slots: Slot[];
   submitted_at: string;
 };
 
 export const mentorResponseRepository = {
   async findBySurveyId(surveyId: string): Promise<MentorResponseRecord[]> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { data, error } = await client
       .from("mentor_responses")
@@ -31,6 +38,11 @@ export const mentorResponseRepository = {
         id: row.id,
         survey_id: row.survey_id,
         mentor_name: row.mentor_name,
+        email: row.email,
+        posse: row.posse,
+        university: row.university,
+        generation: row.generation,
+        available_capacity: row.available_capacity,
         slots: row.slots || [],
         submitted_at: row.submitted_at,
       })) || []
@@ -41,9 +53,10 @@ export const mentorResponseRepository = {
     surveyId: string,
     mentorName: string,
   ): Promise<MentorResponseRecord | null> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { data, error } = await client
       .from("mentor_responses")
@@ -64,6 +77,11 @@ export const mentorResponseRepository = {
       id: data.id,
       survey_id: data.survey_id,
       mentor_name: data.mentor_name,
+      email: data.email,
+      posse: data.posse,
+      university: data.university,
+      generation: data.generation,
+      available_capacity: data.available_capacity,
       slots: data.slots || [],
       submitted_at: data.submitted_at,
     };
@@ -74,9 +92,10 @@ export const mentorResponseRepository = {
     mentorName: string,
     slots: Slot[],
   ): Promise<MentorResponseRecord | null> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { data, error } = await client
       .from("mentor_responses")
@@ -97,6 +116,11 @@ export const mentorResponseRepository = {
       id: data.id,
       survey_id: data.survey_id,
       mentor_name: data.mentor_name,
+      email: data.email,
+      posse: data.posse,
+      university: data.university,
+      generation: data.generation,
+      available_capacity: data.available_capacity,
       slots: data.slots || [],
       submitted_at: data.submitted_at,
     };
@@ -104,20 +128,33 @@ export const mentorResponseRepository = {
 
   async upsert(
     surveyId: string,
-    mentorName: string,
-    slots: Slot[],
+    input: {
+      mentorName: string;
+      email: string;
+      posse: string;
+      university: string;
+      generation: string;
+      availableCapacity: string;
+      slots: Slot[];
+    },
   ): Promise<MentorResponseRecord | null> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { data, error } = await client
       .from("mentor_responses")
       .upsert(
         {
           survey_id: surveyId,
-          mentor_name: mentorName,
-          slots,
+          mentor_name: input.mentorName,
+          email: input.email,
+          posse: input.posse,
+          university: input.university,
+          generation: input.generation,
+          available_capacity: input.availableCapacity,
+          slots: input.slots,
         },
         {
           onConflict: "survey_id,mentor_name",
@@ -135,6 +172,11 @@ export const mentorResponseRepository = {
       id: data.id,
       survey_id: data.survey_id,
       mentor_name: data.mentor_name,
+      email: data.email,
+      posse: data.posse,
+      university: data.university,
+      generation: data.generation,
+      available_capacity: data.available_capacity,
       slots: data.slots || [],
       submitted_at: data.submitted_at,
     };
