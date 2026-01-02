@@ -1,7 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -17,6 +15,8 @@ import {
   type SurveyCreateFormData,
   surveyCreateSchema,
 } from "@/models/survey/surveyValidators";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 type SurveyCreateFormProps = {
   onSubmit: (data: SurveyInput) => void;
@@ -49,9 +49,6 @@ export function SurveyCreateForm({
       <Card>
         <CardHeader>
           <CardTitle>基本情報</CardTitle>
-          <CardDescription>
-            アンケートの基本的な情報を入力してください
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -92,7 +89,7 @@ export function SurveyCreateForm({
         <CardHeader>
           <CardTitle>期間設定</CardTitle>
           <CardDescription>
-            アンケートの募集期間を設定してください
+            アンケートで募集する日程を設定してください
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -103,7 +100,7 @@ export function SurveyCreateForm({
                 id="startDate"
                 type="date"
                 {...register("startDate")}
-                className={errors.startDate ? "border-red-500" : ""}
+                className={`cursor-pointer ${errors.startDate ? "border-red-500" : ""} tw-date-anywhere`}
               />
               {errors.startDate && (
                 <p className="text-sm text-red-500">
@@ -118,7 +115,7 @@ export function SurveyCreateForm({
                 id="endDate"
                 type="date"
                 {...register("endDate")}
-                className={errors.endDate ? "border-red-500" : ""}
+                className={`${errors.endDate ? "border-red-500" : ""} tw-date-anywhere`}
               />
               {errors.endDate && (
                 <p className="text-sm text-red-500">{errors.endDate.message}</p>
@@ -150,9 +147,6 @@ export function SurveyCreateForm({
                 {errors.spreadsheetUrl.message}
               </p>
             )}
-            <p className="text-xs text-gray-500">
-              Googleスプレッドシートの共有URLを貼り付けてください
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -160,9 +154,9 @@ export function SurveyCreateForm({
       <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
         <p className="text-sm text-blue-800 font-medium mb-2">作成後の動作</p>
         <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
-          <li>アンケートが作成され、一覧に表示されます</li>
-          <li>メンター用の回答URLが自動生成されます</li>
-          <li>回答データが指定したスプレッドシートに保存されます</li>
+          <li>メンターが回答するアンケートが作成されます。</li>
+          <li>アンケートの回答状況は各アンケート詳細ページで確認できます</li>
+          <li>メンターの回答は登録したスプレッドシートに保存されます</li>
         </ul>
       </div>
 
@@ -181,10 +175,10 @@ export function SurveyCreateForm({
         )}
         <Button
           type="submit"
-          variant="primary"
+          variant="outline"
           size="lg"
           disabled={isSubmitting}
-          className="min-w-[200px] cursor-pointer"
+          className="cursor-pointer"
         >
           {isSubmitting ? "作成中..." : "アンケートを作成"}
         </Button>
