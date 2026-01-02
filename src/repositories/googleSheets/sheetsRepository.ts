@@ -1,5 +1,6 @@
 import { getSheetsClient } from "@/libs/googleApi";
 import type { Slot } from "@/models/slot/slot";
+import { formatSlotsForDisplay } from "@/models/slot/slotFormat";
 import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
 type SpreadsheetRow = {
@@ -36,38 +37,36 @@ export const sheetsRepository = {
 
       // データを書き込むシートが存在しないということは、新歓担当がメンター用アンケートを作成したときに登録したシートを消したりしている可能性がある
       // それは回答者であるメンターにはどうすることもできないので、エラーとして扱いログを残す
-      if (sheets.length === 0) {
+      if (sheets === null) {
         throw new Error(
           "回答を書き込むシートが存在しませんでした、新歓担当に連絡してください",
         );
       }
 
       // データ行を作成
-      const rows = slots.map((slot) => [
+      const row =  [
         mentorName,
         email,
         posse,
         university,
         generation,
         availableCapacity,
-        slot.date,
-        slot.startTime,
-        slot.endTime,
+        formatSlotsForDisplay(slots),
         submittedAt,
-      ]);
+      ];;
 
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `A2:E`,
+        range: `A2:H`,
         valueInputOption: "RAW",
         requestBody: {
-          values: rows,
+          values: [row],
         },
       });
 
       console.log(
-        `Successfully appended ${rows.length} rows to spreadsheet ${spreadsheetId}`,
+        `Successfully appended ${row.length} rows to spreadsheet ${spreadsheetId}`,
       );
       return true;
     } catch (error) {
