@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import type { MentorResponse } from "@/models/mentorResponse/mentorResponse";
 import { formatSlotDisplay } from "@/models/slot/slotFormat";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 type MentorResponseTableProps = {
   responses: MentorResponse[];
@@ -13,22 +12,9 @@ type MentorResponseTableProps = {
 
 export function MentorResponseTable({ responses }: MentorResponseTableProps) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
   const toggleSort = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
-
-  const toggleRow = (id: string) => {
-    setExpandedRows((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
   };
 
   const sortedResponses = [...responses].sort((a, b) => {
@@ -68,24 +54,15 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                 </button>
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                回答日時スロット
+                可能時間帯
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                 回答日時
-              </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
-                詳細
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {sortedResponses.map((response) => {
-              const isExpanded = expandedRows.has(response.id);
-              const displaySlots = isExpanded
-                ? response.slots
-                : response.slots.slice(0, 2);
-              const hasMore = response.slots.length > 2;
-
               return (
                 <tr
                   key={response.id}
@@ -96,16 +73,11 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                   </td>
                   <td className="px-4 py-3 text-sm">
                     <div className="space-y-1">
-                      {displaySlots.map((slot) => (
-                        <Badge key={slot.id} variant="outline">
+                      {response.slots.map((slot) => (
+                        <Badge key={slot.id} variant="outline" className="m-1">
                           {formatSlotDisplay(slot)}
                         </Badge>
                       ))}
-                      {hasMore && !isExpanded && (
-                        <span className="text-xs text-gray-500">
-                          他{response.slots.length - 2}件...
-                        </span>
-                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-500">
@@ -116,19 +88,6 @@ export function MentorResponseTable({ responses }: MentorResponseTableProps) {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {hasMore && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="cursor-pointer"
-                        onClick={() => toggleRow(response.id)}
-                      >
-                        {isExpanded ? "閉じる" : "すべて表示"}
-                      </Button>
-                    )}
                   </td>
                 </tr>
               );
