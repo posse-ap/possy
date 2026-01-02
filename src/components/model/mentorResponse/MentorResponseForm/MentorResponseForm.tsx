@@ -300,6 +300,7 @@ export function MentorResponseForm({
             googleEvents={googleEvents}
             selectedSlots={slots}
             onDateTimeSelect={handleDateTimeSelect}
+            startDate={startDate}
           />
         </div>
 
