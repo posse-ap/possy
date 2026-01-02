@@ -1,11 +1,11 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/libs/utils";
 import type { CalendarEvent } from "@/models/calendar/calendarEvent";
 import type { Slot } from "@/models/slot/slot";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 type CalendarViewProps = {
   googleEvents: CalendarEvent[];
@@ -25,9 +25,10 @@ export function CalendarView({
     return new Date(today.setDate(diff));
   });
 
-  // 表示する時間帯（0:00 - 23:00、24時間表示）
-  const timeSlots = Array.from({ length: 24 }, (_, i) => {
-    return `${String(i).padStart(2, "0")}:00`;
+  // 表示する時間帯（8:00 - 23:00、24時間表示）
+  const timeSlots = Array.from({ length: 16 }, (_, i) => {
+    const hour = i + 8;
+    return `${String(hour).padStart(2, "0")}:00`;
   });
 
   // 週の日付を取得
@@ -108,7 +109,7 @@ export function CalendarView({
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-        <div className="min-w-[800px]">
+        <div className="min-w-200">
           {/* ヘッダー */}
           <div className="grid grid-cols-8 border-b border-gray-200 bg-gray-50">
             <div className="border-r border-gray-200 p-2 text-center text-xs font-medium">
