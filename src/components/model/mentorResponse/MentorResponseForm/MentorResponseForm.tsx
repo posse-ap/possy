@@ -2,13 +2,20 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { CalendarView } from "@/components/model/calendar/CalendarView";
 import { EventList } from "@/components/model/calendar/EventList";
 import { SlotList } from "@/components/model/slot/SlotList";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select/select";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import type { CalendarEvent } from "@/models/calendar/calendarEvent";
@@ -20,6 +27,7 @@ import {
   validateNoOverlap,
 } from "@/models/mentorResponse/mentorResponseValidators";
 import type { Slot } from "@/models/slot/slot";
+import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
 type MentorResponseFormProps = {
   onSubmit: (data: MentorResponseInput) => void;
@@ -38,6 +46,7 @@ export function MentorResponseForm({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<MentorResponseFormData>({
     resolver: zodResolver(mentorResponseSchema),
@@ -105,6 +114,11 @@ export function MentorResponseForm({
 
     onSubmit({
       mentorName: data.mentorName,
+      email: data.email,
+      university: data.university,
+      posse: data.posse,
+      generation: data.generation,
+      availableCapacity: data.availableCapacity,
       slots,
     });
   };
@@ -116,20 +130,130 @@ export function MentorResponseForm({
           <CardTitle>基本情報</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <Label htmlFor="mentorName">お名前 *</Label>
-            <Input
-              id="mentorName"
-              type="text"
-              placeholder="山田 太郎"
-              {...register("mentorName")}
-              className={errors.mentorName ? "border-red-500" : ""}
-            />
-            {errors.mentorName && (
-              <p className="text-sm text-red-500">
-                {errors.mentorName.message}
-              </p>
-            )}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="mentorName">お名前 *</Label>
+              <Input
+                id="mentorName"
+                type="text"
+                placeholder="山田 太郎"
+                {...register("mentorName")}
+                className={errors.mentorName ? "border-red-500" : ""}
+              />
+              {errors.mentorName && (
+                <p className="text-sm text-red-500">
+                  {errors.mentorName.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">メールアドレス *</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="example@example.com"
+                {...register("email")}
+                className={errors.email ? "border-red-500" : ""}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="university">大学 *</Label>
+              <Input
+                id="university"
+                type="text"
+                placeholder="〇〇大学"
+                {...register("university")}
+                className={errors.university ? "border-red-500" : ""}
+              />
+              {errors.university && (
+                <p className="text-sm text-red-500">
+                  {errors.university.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="posse">所属POSSE *</Label>
+              <Controller
+                name="posse"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className={`w-full ${errors.posse ? "border-red-500" : ""}`}>
+                      <SelectValue placeholder="選択してください" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="①">①</SelectItem>
+                      <SelectItem value="②">②</SelectItem>
+                      <SelectItem value="③">③</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.posse && (
+                <p className="text-sm text-red-500">
+                  {errors.posse.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="generation">何期生 *</Label>
+              <Controller
+                name="generation"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className={`w-full ${errors.generation ? "border-red-500" : ""}`}>
+                      <SelectValue placeholder="選択してください" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="3期生">3期生</SelectItem>
+                      <SelectItem value="4期生">4期生</SelectItem>
+                      <SelectItem value="5期生">5期生</SelectItem>
+                      <SelectItem value="6期生">6期生</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.generation && (
+                <p className="text-sm text-red-500">
+                  {errors.generation.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="availableCapacity">何グループ対応できるか *</Label>
+              <Controller
+                name="availableCapacity"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className={`w-full ${errors.availableCapacity ? "border-red-500" : ""}`}>
+                      <SelectValue placeholder="選択してください" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1チームならできます">1チームならできます</SelectItem>
+                      <SelectItem value="2〜3チームならできます">2〜3チームならできます</SelectItem>
+                      <SelectItem value="3チーム以上できます">3チーム以上できます</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.availableCapacity && (
+                <p className="text-sm text-red-500">
+                  {errors.availableCapacity.message}
+                </p>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

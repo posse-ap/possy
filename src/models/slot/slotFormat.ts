@@ -7,6 +7,10 @@ export function formatSlotDisplay(slot: Slot): string {
   return `${month}/${day} ${slot.startTime}-${slot.endTime}`;
 }
 
+export function formatSlotsForDisplay(slots: Slot[]): string {
+  return slots.map((slot) => formatSlotDisplay(slot)).join("、");
+}
+
 export function formatSlotForExport(slots: Slot[]): string {
   return slots.map((slot) => formatSlotDisplay(slot)).join("、");
 }

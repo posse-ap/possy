@@ -22,23 +22,20 @@ export async function middleware(req: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const pathname = req.nextUrl.pathname
-
-  // 例：/app 配下を全部ログイン必須にする
-  const isProtected = pathname.startsWith("/app")
-
-  if (isProtected && !user) {
-    const url = req.nextUrl.clone()
-    url.pathname = "/"
-    url.searchParams.set("redirectTo", pathname)
-    return NextResponse.redirect(url)
-  }
+  // セッションを更新（リフレッシュトークンの処理など）
+  await supabase.auth.getSession()
 
   return res
 }
 
 export const config = {
-  matcher: ["/app/:path*"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+  ],
 }

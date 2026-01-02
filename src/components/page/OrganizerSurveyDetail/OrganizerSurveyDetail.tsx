@@ -13,35 +13,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { dummyMentorResponses } from "@/models/mentorResponse/dummyResponses";
 import {
   copyToClipboard,
   formatSlotsForGoogleForm,
   getAllUniqueSlotsFromResponses,
 } from "@/models/slot/slotUtils";
 import type { Survey } from "@/models/survey/survey";
+import type { MentorResponseWithSlots } from "@/usecases/mentorResponse";
 
 type OrganizerSurveyDetailProps = {
   survey: Survey;
+  responses: MentorResponseWithSlots[];
 };
 
-export function OrganizerSurveyDetail({ survey }: OrganizerSurveyDetailProps) {
-  const [copied, setCopied] = useState(false);
-
-  // このアンケートの回答を取得
-  const responses = dummyMentorResponses.filter(
-    (r) => r.surveyId === survey.id,
+export function OrganizerSurveyDetail({
+  survey,
+  responses,
+}: OrganizerSurveyDetailProps) {
+  const [copiedTarget, setCopiedTarget] = useState<"mentor" | "slots" | null>(
+    null,
   );
 
   // すべてのスロットを昇順で取得
   const allSlots = getAllUniqueSlotsFromResponses(responses);
   const googleFormText = formatSlotsForGoogleForm(allSlots);
 
-  const handleCopy = async () => {
-    const success = await copyToClipboard(googleFormText);
+  const handleCopy = async (text: string, target: "mentor" | "slots") => {
+    const success = await copyToClipboard(text);
     if (success) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedTarget(target);
+      setTimeout(() => setCopiedTarget(null), 2000);
     }
   };
 
@@ -107,14 +108,23 @@ export function OrganizerSurveyDetail({ survey }: OrganizerSurveyDetailProps) {
                   readOnly
                   className="flex-1 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm"
                 />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => copyToClipboard(mentorUrl)}
-                  className="cursor-pointer"
-                >
-                  <Copy className="h-4 w-4" />
-                  コピー
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleCopy(mentorUrl, "mentor")}
+                    className="cursor-pointer"
+                  >
+                    {copiedTarget === "mentor" ? (
+                      <>
+                        <CheckCircle2 className="h-5 w-5" />
+                        コピーしました！
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      コピー
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -138,11 +148,11 @@ export function OrganizerSurveyDetail({ survey }: OrganizerSurveyDetailProps) {
               <Button
                 variant="primary"
                 size="lg"
-                onClick={handleCopy}
+                onClick={() => handleCopy(googleFormText, "slots")}
                 disabled={allSlots.length === 0}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                {copied ? (
+                {copiedTarget === "slots" ? (
                   <>
                     <CheckCircle2 className="h-5 w-5" />
                     コピーしました！

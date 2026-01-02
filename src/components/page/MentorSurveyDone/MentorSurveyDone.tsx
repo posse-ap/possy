@@ -1,7 +1,5 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -10,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import { CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 type MentorSurveyDoneProps = {
   surveyId: string;
@@ -42,11 +42,12 @@ export function MentorSurveyDone({ surveyId }: MentorSurveyDoneProps) {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+              {/* メンターは回答したあとに編集できる必要はまだないのでコメントアウト
               <Link href={`/mentor/${surveyId}`}>
                 <Button variant="primary" className="cursor-pointer">
                   回答を編集
                 </Button>
-              </Link>
+              </Link> */}
               <Link href="/">
                 <Button variant="outline" className="cursor-pointer">
                   ホームへ戻る
