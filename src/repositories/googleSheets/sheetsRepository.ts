@@ -22,6 +22,7 @@ export const sheetsRepository = {
    */
   async appendMentorResponseRows(
     spreadsheetId: string,
+    sheetId: number,
     mentorName: string,
     slots: Slot[],
     email: string,
@@ -55,10 +56,17 @@ export const sheetsRepository = {
         submittedAt,
       ];;
 
+      // シート名を取得
+      const sheetName = await this.getSheetNameById(
+        spreadsheetId,
+        sheetId,
+        accessToken,
+      );
+
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `A2:H`,
+        range: `${sheetName}!A2:H`,
         valueInputOption: "RAW",
         requestBody: {
           values: [row],
@@ -109,6 +117,36 @@ export const sheetsRepository = {
     } catch (error) {
       console.error("Error reading from spreadsheet:", error);
       return [];
+    }
+  },
+
+  /**
+   * スプレッドシートの情報からシート名を取得
+   * @param spreadsheetId - スプレッドシートID
+   * @param sheetId - シートID
+   * @param accessToken - Google OAuth2アクセストークン
+   * @returns シート名、存在しない場合はnull
+   */
+  async getSheetNameById(
+    spreadsheetId: string,
+    sheetId: number,
+    accessToken: string,
+  ): Promise<string | null> {
+    try {
+      const sheets = getSheetsClient(accessToken);
+
+      const response = await sheets.spreadsheets.get({
+        spreadsheetId,
+      });
+
+      const sheet = response.data.sheets?.find(
+        (s) => s.properties?.sheetId === sheetId,
+      );
+
+      return sheet?.properties?.title || null;
+    } catch (error) {
+      console.error("Error getting sheet name by ID:", error);
+      return null;
     }
   },
 };

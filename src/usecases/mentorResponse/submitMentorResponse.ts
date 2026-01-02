@@ -65,11 +65,12 @@ export async function submitMentorResponse(
 
     // 5. Spreadsheet反映（バックアップ用・アクセストークンがある場合のみ）
     if (accessToken) {
-      const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);
+      const { spreadsheetId, sheetId } = extractSpreadsheetId(survey.spreadsheetUrl) || {};
       if (spreadsheetId) {
         try {
           await sheetsRepository.appendMentorResponseRows(
             spreadsheetId,
+            sheetId,
             input.mentorName,
             input.slots,
             input.email,
@@ -126,7 +127,15 @@ export async function submitMentorResponse(
   }
 }
 
-function extractSpreadsheetId(url: string): string | null {
-  const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  return match ? match[1] : null;
+function extractSpreadsheetId(url: string): { spreadsheetId: string; sheetId: number } | null {
+  const spreadsheetMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  const sheetMatch = url.match(/[#&]gid=([0-9]+)/);
+  if (!spreadsheetMatch) {
+    return null;
+  }
+
+  return {
+    spreadsheetId: spreadsheetMatch[1],
+    sheetId: sheetMatch ? parseInt(sheetMatch[1], 10) : 0, // gidが指定されていない場合はデフォルトの"0"
+  };
 }
