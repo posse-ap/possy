@@ -12,7 +12,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 py-16 px-4">
+    <div className=" bg-gray-50 pt-16 px-4">
       <div className="mx-auto max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
