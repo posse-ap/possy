@@ -1,12 +1,12 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import type { SlotInput } from "@/models/slot/slot";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 
 type SlotEditorProps = {
   onAdd: (slot: SlotInput) => void;
@@ -61,7 +61,7 @@ export function SlotEditor({ onAdd }: SlotEditorProps) {
           </div>
           <Button
             type="button"
-            variant="primary"
+            variant="default"
             onClick={handleAdd}
             disabled={!date || !startTime}
             className="w-full cursor-pointer"

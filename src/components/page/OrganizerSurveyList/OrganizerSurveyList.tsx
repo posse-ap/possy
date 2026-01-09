@@ -1,10 +1,10 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import { SurveySummaryCard } from "@/components/model/survey/SurveySummaryCard";
 import { Button } from "@/components/ui/Button";
 import type { Survey } from "@/models/survey/survey";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
 type SurveyWithCount = Survey & {
   responseCount: number;
@@ -26,7 +26,7 @@ export function OrganizerSurveyList({ surveys }: OrganizerSurveyListProps) {
             </p>
           </div>
           <Link href="/organizer/create">
-            <Button variant="primary" size="lg" className="cursor-pointer">
+            <Button variant="default" size="lg" className="cursor-pointer">
               <Plus className="h-5 w-5" />
               新規作成
             </Button>
@@ -49,7 +49,7 @@ export function OrganizerSurveyList({ surveys }: OrganizerSurveyListProps) {
               まだアンケートが作成されていません
             </p>
             <Link href="/organizer/create">
-              <Button variant="primary" className="cursor-pointer">
+              <Button variant="default" className="cursor-pointer">
                 <Plus className="h-5 w-5" />
                 最初のアンケートを作成
               </Button>
