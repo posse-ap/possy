@@ -1,3 +1,4 @@
+import { Footer } from "@/components/layout";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
@@ -25,13 +26,14 @@ export default function RootLayout({
 }>) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-    <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+      <html lang="ja">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-gray-50`}
+        >
+          {children}
+          <Footer />
+        </body>
+      </html>
     </Suspense>
   );
 }
