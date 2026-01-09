@@ -1,5 +1,5 @@
-import { z } from "zod";
 import type { Slot } from "@/models/slot/slot";
+import { z } from "zod";
 
 export const mentorResponseSchema = z.object({
   mentorName: z
@@ -15,13 +15,13 @@ export const mentorResponseSchema = z.object({
     .min(1, "大学名を入力してください")
     .max(100, "大学名は100文字以内で入力してください"),
   posse: z.enum(["①", "②", "③"], {
-    required_error: "POSSEを選択してください",
+    error: "POSSEを選択してください",
   }),
   generation: z.enum(["3期生", "4期生", "5期生", "6期生"], {
-    required_error: "期生を選択してください",
+    error: "期生を選択してください",
   }),
   availableCapacity: z.enum(["1チームならできます", "2〜3チームならできます", "3チーム以上できます"], {
-    required_error: "対応可能なチーム数を選択してください",
+    error: "対応可能なチーム数を選択してください",
   }),
 });
 
