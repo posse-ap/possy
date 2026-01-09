@@ -66,10 +66,20 @@ export async function submitMentorResponse(
     // 5. Spreadsheet反映（バックアップ用・アクセストークンがある場合のみ）
     if (accessToken) {
       const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);
+      const gid = extractGid(survey.spreadsheetUrl);
       if (spreadsheetId) {
         try {
+          // スプレッドシートからシート名を取得
+          const sheetName = await sheetsRepository.getSheetNameByGid(
+            spreadsheetId,
+            gid,
+            accessToken,
+          );
+          console.log("sheetName", sheetName);
+
           await sheetsRepository.appendMentorResponseRows(
             spreadsheetId,
+            sheetName,
             input.mentorName,
             input.slots,
             input.email,
@@ -82,7 +92,7 @@ export async function submitMentorResponse(
           );
         } catch (error) {
           // sheetIdも欲しいので、エラーメッセージを加工して返す
-          const errorMessage = `Spreadsheetへの書き込みに失敗しました sheetId: ${spreadsheetId} error: ${error instanceof Error ? error.message : error}`;
+          const errorMessage = `Spreadsheetへの書き込みに失敗しました sheetId: ${spreadsheetId} gid: ${gid} error: ${error instanceof Error ? error.message : error}`;
           return {
             success: false,
             message: errorMessage,
@@ -129,4 +139,9 @@ export async function submitMentorResponse(
 function extractSpreadsheetId(url: string): string | null {
   const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
   return match ? match[1] : null;
+}
+
+function extractGid(url: string): string | null {
+  const gidMatch = url.match(/[?&#]gid=(\d+)/);
+  return gidMatch ? gidMatch[1] : null;
 }

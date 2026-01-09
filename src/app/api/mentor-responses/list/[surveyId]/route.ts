@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAccessTokenFromSession } from "@/libs/googleApi";
 import { getServerSupabaseClient } from "@/libs/supabaseClient";
+import { sheetsRepository } from "@/repositories/googleSheets";
 import { listMentorResponses } from "@/usecases/mentorResponse";
 import { getSurvey } from "@/usecases/survey";
 
@@ -16,6 +17,9 @@ export async function GET(
     const spreadsheetId = survey
       ? extractSpreadsheetId(survey.spreadsheetUrl)
       : null;
+    const gid = survey
+      ? extractGid(survey.spreadsheetUrl)
+      : null;
 
     // Supabaseセッションからアクセストークンを取得
     const supabase = await getServerSupabaseClient();
@@ -24,9 +28,20 @@ export async function GET(
     } = await supabase.auth.getSession();
     const accessToken = await getAccessTokenFromSession(session);
 
+    // スプレッドシートからシート名を取得
+    let sheetName: string | undefined;
+    if (accessToken && spreadsheetId) {
+      sheetName = await sheetsRepository.getSheetNameByGid(
+        spreadsheetId,
+        gid,
+        accessToken,
+      );
+    }
+
     const responses = await listMentorResponses(
       surveyId,
       spreadsheetId || undefined,
+      sheetName,
       accessToken || undefined,
     );
 
@@ -43,4 +58,9 @@ export async function GET(
 function extractSpreadsheetId(url: string): string | null {
   const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
   return match ? match[1] : null;
+}
+
+function extractGid(url: string): string | null {
+  const gidMatch = url.match(/[?&#]gid=(\d+)/);
+  return gidMatch ? gidMatch[1] : null;
 }
