@@ -1,6 +1,6 @@
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
 
 async function createSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -68,12 +68,16 @@ export async function GET(request: Request) {
     }
 
     if (providerRefreshToken) {
-      response.cookies.set("google_provider_refresh_token", providerRefreshToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-      });
+      response.cookies.set(
+        "google_provider_refresh_token",
+        providerRefreshToken,
+        {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+        },
+      );
     }
 
     return response;
@@ -128,12 +132,16 @@ export async function POST(request: Request) {
     }
 
     if (providerRefreshToken) {
-      response.cookies.set("google_provider_refresh_token", providerRefreshToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-      });
+      response.cookies.set(
+        "google_provider_refresh_token",
+        providerRefreshToken,
+        {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+        },
+      );
     }
 
     return response;
