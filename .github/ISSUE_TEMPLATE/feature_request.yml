@@ -1,0 +1,38 @@
+name: ✨ 機能要望
+description: 新しい機能や改善案の提案
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能要望ありがとうございます！
+        「なぜ必要か」が分かると採用しやすいです 🙌
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 解決したい課題
+      description: 今どんな問題がありますか？
+      placeholder: 例）一覧から直接編集できず手間がかかる
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 提案する解決策
+      description: どんな機能があると良さそうですか？
+      placeholder: 例）一覧に編集ボタンを追加したい
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternative
+    attributes:
+      label: 代替案
+      description: 他に考えた案があれば
+      placeholder: 例）別画面でまとめて編集できるようにする
+    validations:
+      required: false
