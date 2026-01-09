@@ -95,15 +95,6 @@ export function OrganizerSurveyDetail({
                   className="flex-1 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm"
                 />
                 <Button
-                  variant="outline"
-                  size="default"
-                  onClick={() => handleCopy(mentorUrl, "mentor")}
-                  className="cursor-pointer border-0"
-                >
-                  <Copy className="h-4 w-4" />
-                  開く
-                </Button>
-                <Button
                   variant="link"
                   size="icon"
                   className="cursor-pointer border-0"
