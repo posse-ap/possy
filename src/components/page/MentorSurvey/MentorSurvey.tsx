@@ -1,5 +1,6 @@
 "use client";
 
+import { LoginButton } from "@/components/model/Auth";
 import { MentorResponseForm } from "@/components/model/mentorResponse/MentorResponseForm";
 import {
   Card,
@@ -40,7 +41,7 @@ export function MentorSurvey({
         const response = await fetch(
           `/api/calendar/events?startDate=${startDate}&endDate=${endDate}`,
         );
-        
+
         if (response.ok) {
           const data = await response.json();
           setGoogleEvents(data.events || []);
@@ -88,6 +89,10 @@ export function MentorSurvey({
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
+      {/* Login Button */}
+      <div className="flex justify-center mb-12">
+        <LoginButton />
+      </div>
       <div className="mx-auto max-w-7xl space-y-6">
         <Card className="border-2">
           <CardHeader>
@@ -99,11 +104,11 @@ export function MentorSurvey({
           <CardContent>
             <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 text-sm text-blue-800">
               <p className="font-medium mb-2">
-                {isLoadingEvents 
+                {isLoadingEvents
                   ? "Googleカレンダーの予定を読み込み中..."
                   : googleEvents.length > 0
-                  ? "Googleカレンダーの予定を表示しています"
-                  : "Googleカレンダーの予定が取得できませんでした（Google認証が必要です）"}
+                    ? "Googleカレンダーの予定を表示しています"
+                    : "Googleカレンダーの予定が取得できませんでした（Google認証が必要です）"}
               </p>
               <ul className="space-y-1 text-blue-700">
                 <li>・青色のセルはあなたの既存予定です</li>

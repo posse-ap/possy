@@ -13,8 +13,45 @@ type SpreadsheetRow = {
 
 export const sheetsRepository = {
   /**
+   * スプレッドシートからシート名を取得
+   * @param spreadsheetId - スプレッドシートID
+   * @param gid - シートのgid (URLのgidパラメータ)
+   * @param accessToken - Google OAuth2アクセストークン
+   */
+  async getSheetNameByGid(
+    spreadsheetId: string,
+    gid: string | null,
+    accessToken: string,
+  ): Promise<string> {
+    try {
+      const sheets = getSheetsClient(accessToken);
+
+      const response = await sheets.spreadsheets.get({
+        spreadsheetId,
+      });
+
+      const sheetsList = response.data.sheets || [];
+
+      // gidが指定されていない、または"0"の場合は最初のシートを返す
+      if (!gid || gid === "0") {
+        return sheetsList[0]?.properties?.title || "シート1";
+      }
+
+      // gidに一致するシートを探す
+      const targetSheet = sheetsList.find(
+        (s) => s.properties?.sheetId?.toString() === gid,
+      );
+
+      return targetSheet?.properties?.title || "シート1";
+    } catch (error) {
+      console.error("Error fetching sheet name:", error);
+      return "シート1"; // エラー時はデフォルト値を返す
+    }
+  },
+  /**
    * メンター回答をスプレッドシートに追加
    * @param spreadsheetId - スプレッドシートID
+   * @param sheetName - シート名
    * @param mentorName - メンター名
    * @param slots - スロット配列
    * @param submittedAt - 送信日時
@@ -22,6 +59,7 @@ export const sheetsRepository = {
    */
   async appendMentorResponseRows(
     spreadsheetId: string,
+    sheetName: string,
     mentorName: string,
     slots: Slot[],
     email: string,
@@ -58,7 +96,7 @@ export const sheetsRepository = {
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `A2:H`,
+        range: `${sheetName}!A2:H`,
         valueInputOption: "RAW",
         requestBody: {
           values: [row],
@@ -78,10 +116,12 @@ export const sheetsRepository = {
   /**
    * スプレッドシートからメンター回答を取得
    * @param spreadsheetId - スプレッドシートID
+   * @param sheetName - シート名
    * @param accessToken - Google OAuth2アクセストークン
    */
   async getMentorResponseRows(
     spreadsheetId: string,
+    sheetName: string,
     accessToken: string,
   ): Promise<SpreadsheetRow[]> {
     try {
@@ -89,7 +129,7 @@ export const sheetsRepository = {
 
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: `A2:E`, // ヘッダー行をスキップ
+        range: `${sheetName}!A2:E`, // ヘッダー行をスキップ
       });
 
       const rows = response.data.values || [];

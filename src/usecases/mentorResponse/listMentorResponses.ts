@@ -14,6 +14,7 @@ export type MentorResponseWithSlots = {
 export async function listMentorResponses(
   surveyId: string,
   spreadsheetId?: string,
+  sheetName?: string,
   accessToken?: string,
 ): Promise<MentorResponseWithSlots[]> {
   const responses = await mentorResponseRepository.findBySurveyId(surveyId);
@@ -29,10 +30,11 @@ export async function listMentorResponses(
   }));
 
   // Google Sheetsからもデータ取得を試みる（バックアップ確認用・オプション）
-  if (accessToken && spreadsheetId) {
+  if (accessToken && spreadsheetId && sheetName) {
     try {
       const sheetRows = await sheetsRepository.getMentorResponseRows(
         spreadsheetId,
+        sheetName,
         accessToken,
       );
 
