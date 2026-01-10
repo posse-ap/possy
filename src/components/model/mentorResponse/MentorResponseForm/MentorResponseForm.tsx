@@ -59,7 +59,7 @@ export function MentorResponseForm({
   const handleDateTimeSelect = (date: string, startTime: string) => {
     // 2時間後の終了時刻を計算
     const [hours, minutes] = startTime.split(":").map(Number);
-    const endHours = (hours + 2) % 24;
+    const endHours = hours + 2;
     const endTime = `${String(endHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 
     // 既に同じ時間帯が選択されているか確認

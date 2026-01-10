@@ -20,7 +20,7 @@ export function SlotEditor({ onAdd }: SlotEditorProps) {
     if (!date || !startTime) return;
 
     const [hours, minutes] = startTime.split(":").map(Number);
-    const endHours = (hours + 2) % 24;
+    const endHours = hours + 2;
     const endTime = `${String(endHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 
     onAdd({
