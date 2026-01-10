@@ -1,5 +1,4 @@
-import { Footer } from "@/components/layout";
-import { hasAuthenticated } from "@/libs/supabaseServer";
+import { Footer, Header } from "@/components/layout";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
@@ -20,19 +19,19 @@ export const metadata: Metadata = {
   description: "メンターの日程を簡単に調整できるアプリケーション",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isAuthenticated = await hasAuthenticated();
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <html lang="ja">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-gray-50`}
         >
-          {children}
+          <Header />
+          <main className="flex-1">{children}</main>
           <Footer />
         </body>
       </html>
