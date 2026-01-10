@@ -1,6 +1,6 @@
 import { Calendar, Users } from "lucide-react";
 import Link from "next/link";
-import { LoginButton } from "@/components/model/Auth";
+import { LoginButton, LogoutButton } from "@/components/model/Auth";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -9,8 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import { hasValidAccessToken } from "@/libs/supabaseServer";
 
-export default function Home() {
+export default async function Home() {
+  const isAuthenticated = await hasValidAccessToken();
+
   return (
     <div className=" bg-gray-50 pt-16 px-4">
       <div className="mx-auto max-w-4xl">
@@ -20,9 +23,9 @@ export default function Home() {
           <p className="text-xl text-gray-600">メンターの日程調整を簡単に</p>
         </div>
 
-        {/* Login Button */}
+        {/* Auth Button */}
         <div className="flex justify-center mb-12">
-          <LoginButton />
+          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
         </div>
 
         {/* Feature Cards */}
