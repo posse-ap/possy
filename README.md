@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# possy
+新歓運営 - メンター においてアンケート作成や回答を楽にするアプリ
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## データ復旧方法
+- スプレッドシートにデータが反映されない場合に使用
+- supabaseのsql editorから該当の`survey_id`で検索する
+```sql
+SELECT
+  m.mentor_name AS "名前",
+  m.email AS "メールアドレス",
+  m.posse AS "所属posse",
+  m.university AS "大学",
+  m.generation AS "期生",
+  m.available_capacity AS "対応可能チーム数",
+  string_agg(
+    (slot->>'date') || ' ' || (slot->>'startTime') || '-' || (slot->>'endTime'),
+    '、'
+    ORDER BY (slot->>'date'), (slot->>'startTime')
+  ) AS "可能日程"
+FROM mentor_responses AS m
+CROSS JOIN LATERAL jsonb_array_elements(m.slots) AS slot
+WHERE m.survey_id = ''
+GROUP BY m.id;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 開発方法
+codespaceで開発をしています
+- cloneする際に、`codespace`s > `create codespaces on develop` を選択。
+- その後に左下の青色の`codespaces`を選択。そして、open in vscode desktopを選択。
+- vscodeで開発ができます
