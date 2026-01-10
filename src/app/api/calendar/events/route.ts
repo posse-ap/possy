@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { getAccessTokenFromSession } from "@/libs/googleApi";
-import { getServerSupabaseClient } from "@/libs/supabaseClient";
+import { getServerSupabaseClient } from "@/libs/supabaseServer";
 import { calendarRepository } from "@/repositories/googleCalendar";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
@@ -21,43 +21,55 @@ export async function GET(request: Request) {
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    
-    console.log("Calendar API: Session exists:", !!session);
-    console.log("Calendar API: Session user:", session?.user?.email);
-    
-    const accessToken = await getAccessTokenFromSession(session);
-    console.log("Calendar API: Access token exists:", !!accessToken);
+
+
+    const { accessToken, refreshToken } =
+      await getAccessTokenFromSession(session);
 
     if (!accessToken) {
       console.warn("Calendar API: No access token available");
       return NextResponse.json(
-        { 
+        {
           error: "Not authenticated with Google",
           events: [],
-          message: "Google認証が必要です"
+          message: "Google認証が必要です",
         },
-        { status: 200 }, // 200で返してフロントエンドで空配列を処理
+        { status: 401 },
       );
     }
 
+    // Google APIライブラリが自動的にトークンをリフレッシュ
     const events = await calendarRepository.listEvents(
       startDate,
       endDate,
       accessToken,
+      refreshToken || undefined,
     );
 
-    console.log(`Calendar API: Fetched ${events.length} events`);
 
     return NextResponse.json({ events });
   } catch (error) {
     console.error("Error fetching calendar events:", error);
+    
+    // 401エラーの場合は認証エラーとして処理
+    if (error && typeof error === 'object' && 'code' in error && error.code === 401) {
+      return NextResponse.json(
+        {
+          error: "Token expired or invalid",
+          events: [],
+          message: "認証の有効期限が切れました。再度ログインしてください",
+        },
+        { status: 401 },
+      );
+    }
+    
     return NextResponse.json(
-      { 
+      {
         error: "Failed to fetch calendar events",
         events: [],
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 200 }, // エラーでも200で返して空配列を処理
+      { status: 500 },
     );
   }
 }

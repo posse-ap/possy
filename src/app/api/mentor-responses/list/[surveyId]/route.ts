@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAccessTokenFromSession } from "@/libs/googleApi";
-import { getServerSupabaseClient } from "@/libs/supabaseClient";
+import { getServerSupabaseClient } from "@/libs/supabaseServer";
 import { sheetsRepository } from "@/repositories/googleSheets";
 import { listMentorResponses } from "@/usecases/mentorResponse";
 import { getSurvey } from "@/usecases/survey";
@@ -26,7 +26,7 @@ export async function GET(
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    const accessToken = await getAccessTokenFromSession(session);
+    const { accessToken } = await getAccessTokenFromSession(session);
 
     // スプレッドシートからシート名を取得
     let sheetName: string | undefined;

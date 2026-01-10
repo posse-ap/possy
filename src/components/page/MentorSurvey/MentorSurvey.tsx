@@ -1,6 +1,5 @@
 "use client";
 
-import { LoginButton } from "@/components/model/Auth";
 import { MentorResponseForm } from "@/components/model/mentorResponse/MentorResponseForm";
 import {
   Card,
@@ -89,10 +88,6 @@ export function MentorSurvey({
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      {/* Login Button */}
-      <div className="flex justify-center mb-12">
-        <LoginButton />
-      </div>
       <div className="mx-auto max-w-7xl space-y-6">
         <Card className="border-2">
           <CardHeader>

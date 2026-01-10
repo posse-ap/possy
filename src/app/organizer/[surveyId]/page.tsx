@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { OrganizerSurveyDetail } from "@/components/page/OrganizerSurveyDetail";
 import { getAccessTokenFromSession } from "@/libs/googleApi";
-import { getServerSupabaseClient } from "@/libs/supabaseClient";
+import { getServerSupabaseClient } from "@/libs/supabaseServer";
 import { listMentorResponses } from "@/usecases/mentorResponse";
 import { getSurvey } from "@/usecases/survey";
 
@@ -25,7 +25,7 @@ export default async function OrganizerSurveyDetailPage({ params }: PageProps) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const accessToken = await getAccessTokenFromSession(session);
+  const { accessToken } = await getAccessTokenFromSession(session);
 
   // スプレッドシートIDを抽出
   const spreadsheetId = extractSpreadsheetId(survey.spreadsheetUrl);

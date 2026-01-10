@@ -1,4 +1,5 @@
-import { getServerSupabaseClient, supabase } from "@/libs/supabaseClient";
+import { getServerSupabaseClient } from "@/libs/supabaseServer";
+import { supabase } from "@/libs/supabaseClient";
 import type { Slot } from "@/models/slot/slot";
 import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
