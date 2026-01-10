@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAccessTokenFromSession } from "@/libs/googleApi";
-import { getServerSupabaseClient } from "@/libs/supabaseClient";
+import { getServerSupabaseClient } from "@/libs/supabaseServer";
 import type { SurveyInput } from "@/models/survey/survey";
 import { createSurvey, listSurveys } from "@/usecases/survey";
 
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    const accessToken = await getAccessTokenFromSession(session);
+    const { accessToken } = await getAccessTokenFromSession(session);
 
     const result = await createSurvey(body, accessToken || undefined);
 
