@@ -12,9 +12,10 @@ export const calendarRepository = {
     startDate: string,
     endDate: string,
     accessToken: string,
+    refreshToken?: string,
   ): Promise<CalendarEvent[]> {
     try {
-      const calendar = getCalendarClient(accessToken);
+      const calendar = getCalendarClient(accessToken, refreshToken);
 
       // 日付をJSTのISOString形式に変換
       const startDateTime = new Date(`${startDate}T00:00:00+09:00`);

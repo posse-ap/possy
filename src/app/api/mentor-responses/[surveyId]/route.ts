@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAccessTokenFromSession } from "@/libs/googleApi";
-import { getServerSupabaseClient } from "@/libs/supabaseClient";
+import { getServerSupabaseClient } from "@/libs/supabaseServer";
 import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse";
 import { submitMentorResponse } from "@/usecases/mentorResponse";
 
@@ -25,7 +25,7 @@ export async function POST(
     const {
       data: { session },
     } = await supabase.auth.getSession();
-    const accessToken = await getAccessTokenFromSession(session);
+    const { accessToken } = await getAccessTokenFromSession(session);
 
     const result = await submitMentorResponse(
       surveyId,

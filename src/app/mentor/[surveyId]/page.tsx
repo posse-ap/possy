@@ -1,6 +1,6 @@
-import { notFound } from "next/navigation";
 import { MentorSurvey } from "@/components/page/MentorSurvey";
 import { getSurvey } from "@/usecases/survey";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   params: Promise<{
