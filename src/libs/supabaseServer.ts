@@ -32,30 +32,44 @@ export async function getServerSupabaseClient() {
 }
 
 /**
- * 有効なアクセストークンを持っているかチェック（Server Component専用）
- * 単純にトークンの存在のみチェック（実際の有効性はGoogle APIライブラリが自動リフレッシュ）
+ * sessionを持っているかチェック（Server Component専用）
  */
-export async function hasValidAccessToken(): Promise<boolean> {
+export async function hasAuthenticated(): Promise<boolean> {
   try {
     const supabase = await getServerSupabaseClient();
+
+    // まずセッションをチェック
     const {
       data: { session },
     } = await supabase.auth.getSession();
 
-    const { accessToken } =
-      await getAccessTokenFromSession(session);
+    if (!session) {
+      return false;
+    }
 
-    // トークンが存在すればOK（Google APIライブラリが自動的にリフレッシュする）
-    return !!accessToken;
+    // セッションがある場合のみgetUser()で検証
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    console.log(
+      "hasAuthenticated - user exists:",
+      !!user,
+      "error:",
+      error?.message,
+    );
+
+    return !!user && !error;
   } catch (error) {
-    console.error("Error checking access token:", error);
+    console.error("hasAuthenticated error:", error);
     return false;
   }
 }
 
 /**
  * アクセストークンの有無をチェック（Server Component専用）
- * @deprecated 有効性も確認する hasValidAccessToken() の使用を推奨
+ * @deprecated 有効性も確認する isAuthenticated() の使用を推奨
  */
 export async function hasAccessToken() {
   const supabase = await getServerSupabaseClient();
