@@ -1,5 +1,3 @@
-import { Calendar, Users } from "lucide-react";
-import Link from "next/link";
 import { LoginButton, LogoutButton } from "@/components/model/Auth";
 import { Button } from "@/components/ui/Button";
 import {
@@ -9,10 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { hasValidAccessToken } from "@/libs/supabaseServer";
+import { hasAuthenticated } from "@/libs/supabaseServer";
+import { Calendar, Users } from "lucide-react";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const isAuthenticated = await hasValidAccessToken();
+  const isSession = await hasAuthenticated();
 
   return (
     <div className=" bg-gray-50 pt-16 px-4">
@@ -25,7 +27,7 @@ export default async function Home() {
 
         {/* Auth Button */}
         <div className="flex justify-center mb-12">
-          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+          {isSession ? <LogoutButton /> : <LoginButton />}
         </div>
 
         {/* Feature Cards */}
