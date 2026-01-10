@@ -1,8 +1,7 @@
 import { Footer } from "@/components/layout";
-import { hasValidAccessToken } from "@/libs/supabaseServer";
+import { hasAuthenticated } from "@/libs/supabaseServer";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -26,10 +25,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isAuthenticated = await hasValidAccessToken();
-  if (!isAuthenticated) {
-    notFound();
-  }
+  const isAuthenticated = await hasAuthenticated();
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <html lang="ja">
