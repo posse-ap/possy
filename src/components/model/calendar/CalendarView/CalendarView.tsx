@@ -76,9 +76,6 @@ export function CalendarView({
   };
 
   const handleCellClick = (date: Date, time: string) => {
-    const event = hasEvent(date, time);
-    if (event) return; // 既存予定がある場合は選択不可
-
     onDateTimeSelect(getDateString(date), time);
   };
 
@@ -163,15 +160,12 @@ export function CalendarView({
                       type="button"
                       key={`${dateKey}-${time}`}
                       onClick={() => handleCellClick(date, time)}
-                      disabled={!!event}
                       className={cn(
-                        "border-r border-gray-200 p-1 text-xs transition-colors",
+                        "border-r border-gray-200 p-1 text-xs transition-colors cursor-pointer",
                         isToday && "bg-blue-50/30",
-                        event && "cursor-not-allowed bg-blue-100 text-blue-800",
+                        event && "bg-blue-100 text-blue-800",
                         isSelected && "bg-black text-white",
-                        !event &&
-                          !isSelected &&
-                          "hover:bg-gray-100 cursor-pointer",
+                        !event && !isSelected && "hover:bg-gray-100",
                       )}
                     >
                       {event ? (
