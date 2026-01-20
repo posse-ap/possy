@@ -3,7 +3,7 @@ import type { Slot } from "@/models/slot/slot";
 import { formatSlotsForDisplay } from "@/models/slot/slotFormat";
 import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
-type SpreadsheetRow = {
+export type SpreadsheetRow = {
   mentorName: string;
   date: string;
   startTime: string;
