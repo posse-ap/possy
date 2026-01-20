@@ -17,9 +17,7 @@ export async function GET(
     const spreadsheetId = survey
       ? extractSpreadsheetId(survey.spreadsheetUrl)
       : null;
-    const gid = survey
-      ? extractGid(survey.spreadsheetUrl)
-      : null;
+    const gid = survey ? extractGid(survey.spreadsheetUrl) : null;
 
     // Supabaseセッションからアクセストークンを取得
     const supabase = await getServerSupabaseClient();

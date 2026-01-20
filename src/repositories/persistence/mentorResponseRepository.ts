@@ -3,7 +3,7 @@ import { supabase } from "@/libs/supabaseClient";
 import type { Slot } from "@/models/slot/slot";
 import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
-type MentorResponseRecord = {
+export type MentorResponseRecord = {
   id: string;
   survey_id: string;
   mentor_name: string;

@@ -22,7 +22,12 @@ export async function POST(request: Request) {
     const body = (await request.json()) as SurveyInput;
 
     // 基本的なバリデーション
-    if (!body.title || !body.startDate || !body.endDate || !body.spreadsheetUrl) {
+    if (
+      !body.title ||
+      !body.startDate ||
+      !body.endDate ||
+      !body.spreadsheetUrl
+    ) {
       return NextResponse.json(
         { error: "Invalid request body" },
         { status: 400 },

@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
     <main className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8">
         <h1 className="text-3xl font-bold mb-6">プライバシーポリシー</h1>
-        
+
         <div className="space-y-6 text-gray-700">
           <section>
             <p className="text-sm text-gray-600 mb-4">
@@ -48,9 +48,13 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-3">3. 第三者サービスの利用</h2>
-            <p className="mb-2">当サービスは、以下の第三者サービスを利用しています：</p>
-            
+            <h2 className="text-xl font-semibold mb-3">
+              3. 第三者サービスの利用
+            </h2>
+            <p className="mb-2">
+              当サービスは、以下の第三者サービスを利用しています：
+            </p>
+
             <div className="space-y-3 mt-3">
               <div className="bg-gray-50 p-4 rounded">
                 <h3 className="font-semibold mb-2">Google API</h3>
@@ -61,9 +65,9 @@ export default function PrivacyPolicyPage() {
                 </ul>
                 <p className="text-sm mt-2">
                   詳細は
-                  <a 
-                    href="https://policies.google.com/privacy" 
-                    target="_blank" 
+                  <a
+                    href="https://policies.google.com/privacy"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline ml-1"
                   >
@@ -76,11 +80,10 @@ export default function PrivacyPolicyPage() {
               <div className="bg-gray-50 p-4 rounded">
                 <h3 className="font-semibold mb-2">Supabase</h3>
                 <p className="text-sm">
-                  データベースとして利用し、個人情報を保存します。
-                  詳細は
-                  <a 
-                    href="https://supabase.com/privacy" 
-                    target="_blank" 
+                  データベースとして利用し、個人情報を保存します。 詳細は
+                  <a
+                    href="https://supabase.com/privacy"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline ml-1"
                   >
@@ -99,7 +102,10 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc pl-6 space-y-1">
               <li>ユーザー認証の維持</li>
-              <li>Google OAuthトークンの保存（`google_provider_token`, `google_provider_refresh_token`）</li>
+              <li>
+                Google OAuthトークンの保存（`google_provider_token`,
+                `google_provider_refresh_token`）
+              </li>
               <li>セッション管理</li>
             </ul>
           </section>
@@ -131,12 +137,15 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-3">8. Google APIの利用について</h2>
+            <h2 className="text-xl font-semibold mb-3">
+              8. Google APIの利用について
+            </h2>
             <p className="mb-2">
-              当サービスのGoogle APIの使用およびGoogle APIから取得した情報の他のアプリへの転送は、
-              <a 
-                href="https://developers.google.com/terms/api-services-user-data-policy" 
-                target="_blank" 
+              当サービスのGoogle APIの使用およびGoogle
+              APIから取得した情報の他のアプリへの転送は、
+              <a
+                href="https://developers.google.com/terms/api-services-user-data-policy"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline mx-1"
               >
@@ -151,14 +160,25 @@ export default function PrivacyPolicyPage() {
               <li>openid - ユーザー識別</li>
               <li>email - メールアドレス</li>
               <li>profile - プロフィール情報</li>
-              <li>https://www.googleapis.com/auth/calendar.readonly - カレンダー閲覧</li>
-              <li>https://www.googleapis.com/auth/calendar.events - カレンダーイベント編集</li>
-              <li>https://www.googleapis.com/auth/spreadsheets - スプレッドシート編集</li>
+              <li>
+                https://www.googleapis.com/auth/calendar.readonly -
+                カレンダー閲覧
+              </li>
+              <li>
+                https://www.googleapis.com/auth/calendar.events -
+                カレンダーイベント編集
+              </li>
+              <li>
+                https://www.googleapis.com/auth/spreadsheets -
+                スプレッドシート編集
+              </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-3">9. プライバシーポリシーの変更</h2>
+            <h2 className="text-xl font-semibold mb-3">
+              9. プライバシーポリシーの変更
+            </h2>
             <p>
               当サービスは、法令の変更やサービスの改善に伴い、本プライバシーポリシーを変更することがあります。
               変更後のプライバシーポリシーは、本ページに掲載された時点で効力を生じます。
@@ -172,7 +192,8 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="bg-gray-50 p-4 rounded mt-2">
               <p className="text-sm">
-                サービス名: Possy<br />
+                サービス名: Possy
+                <br />
                 お問い合わせ先: kazuki.iwagi@posse-ap.com
               </p>
             </div>

@@ -1,6 +1,19 @@
 # possy
 新歓運営 - メンター においてアンケート作成や回答を楽にするアプリ
 
+## 開発方法
+codespaceで開発をしています
+- cloneする際に、`codespace`s > `create codespaces on develop` を選択。
+- その後に左下の青色の`codespaces`を選択。そして、open in vscode desktopを選択。
+- vscodeで開発ができます
+
+### CI/CD
+- **CI**: `.github/workflows/ci.yml` - テスト・リント実行
+- **Build**: `.github/workflows/build.yml` - Next.jsビルド確認
+- **Deploy**: `.github/workflows/supabase-migrate-prod.yml` - Supabaseマイグレーション
+
+プルリクエスト作成時に自動でテストとリントが実行されます。
+
 ## データ復旧方法
 - スプレッドシートにデータが反映されない場合に使用
 - supabaseのsql editorから該当の`survey_id`で検索する
@@ -23,8 +36,3 @@ WHERE m.survey_id = ''
 GROUP BY m.id;
 ```
 
-## 開発方法
-codespaceで開発をしています
-- cloneする際に、`codespace`s > `create codespaces on develop` を選択。
-- その後に左下の青色の`codespaces`を選択。そして、open in vscode desktopを選択。
-- vscodeで開発ができます

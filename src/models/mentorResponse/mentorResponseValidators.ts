@@ -20,9 +20,12 @@ export const mentorResponseSchema = z.object({
   generation: z.enum(["3期生", "4期生", "5期生", "6期生"], {
     error: "期生を選択してください",
   }),
-  availableCapacity: z.enum(["1チームならできます", "2〜3チームならできます", "3チーム以上できます"], {
-    error: "対応可能なチーム数を選択してください",
-  }),
+  availableCapacity: z.enum(
+    ["1チームならできます", "2〜3チームならできます", "3チーム以上できます"],
+    {
+      error: "対応可能なチーム数を選択してください",
+    },
+  ),
 });
 
 export type MentorResponseFormData = z.infer<typeof mentorResponseSchema>;
