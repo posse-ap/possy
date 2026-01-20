@@ -10,7 +10,20 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     env: {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      exclude: [
+        "node_modules/",
+        ".next/",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.config.ts",
+        "**/types/**",
+      ],
     },
   },
   resolve: {
