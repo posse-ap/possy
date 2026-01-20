@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Slot } from "../slot/slot";
 import {
-	checkNewSlotOverlap,
-	validateNoOverlap,
+  checkNewSlotOverlap,
+  validateNoOverlap,
 } from "./mentorResponseValidators";
 
 describe("validateNoOverlap", () => {

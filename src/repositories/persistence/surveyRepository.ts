@@ -5,9 +5,10 @@ import type { Survey, SurveyInput } from "@/models/survey/survey";
 export const surveyRepository = {
   async findById(id: string): Promise<Survey | null> {
     // Server-sideの場合はgetServerSupabaseClient()を使用
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { data, error } = await client
       .from("surveys")
@@ -34,9 +35,10 @@ export const surveyRepository = {
   },
 
   async findAll(): Promise<Survey[]> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { data, error } = await client
       .from("surveys")
@@ -62,9 +64,10 @@ export const surveyRepository = {
   },
 
   async create(input: SurveyInput): Promise<Survey | null> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     // SpreadsheetURLからIDを抽出
     const spreadsheetId = extractSpreadsheetId(input.spreadsheetUrl);
@@ -99,9 +102,10 @@ export const surveyRepository = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const client = typeof window === "undefined" 
-      ? await getServerSupabaseClient()
-      : supabase;
+    const client =
+      typeof window === "undefined"
+        ? await getServerSupabaseClient()
+        : supabase;
 
     const { error } = await client.from("surveys").delete().eq("id", id);
 

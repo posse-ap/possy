@@ -2,7 +2,7 @@ import { supabase } from "@/libs/supabaseClient";
 
 export const useGoogleLogin = () => {
   const handleGoogleLogin = async (returnUrl?: string) => {
-    const redirectTo = returnUrl 
+    const redirectTo = returnUrl
       ? `${window.location.origin}/auth/callback?returnUrl=${encodeURIComponent(returnUrl)}`
       : `${window.location.origin}/auth/callback`;
 

@@ -27,7 +27,10 @@ export function getGoogleOAuth2Client(
  * Supabaseのセッションからアクセストークンとリフレッシュトークンを取得
  */
 export async function getAccessTokenFromSession(
-  session: { provider_token?: string | null; provider_refresh_token?: string | null } | null,
+  session: {
+    provider_token?: string | null;
+    provider_refresh_token?: string | null;
+  } | null,
 ): Promise<{ accessToken: string | null; refreshToken: string | null }> {
   const accessToken = session?.provider_token || null;
   const refreshToken = session?.provider_refresh_token || null;
@@ -40,7 +43,8 @@ export async function getAccessTokenFromSession(
     const cookieStore = await cookies();
     return {
       accessToken: cookieStore.get("google_provider_token")?.value || null,
-      refreshToken: cookieStore.get("google_provider_refresh_token")?.value || null,
+      refreshToken:
+        cookieStore.get("google_provider_refresh_token")?.value || null,
     };
   } catch {
     return { accessToken: null, refreshToken: null };

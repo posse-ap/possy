@@ -28,8 +28,8 @@ export const LoginButton = () => {
       </Button>
       <p className="text-xs text-gray-500 text-center">
         ログインすることで、
-        <Link 
-          href="/privacy" 
+        <Link
+          href="/privacy"
           className="text-blue-600 hover:underline mx-1"
           target="_blank"
           rel="noopener noreferrer"

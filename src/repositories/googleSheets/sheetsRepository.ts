@@ -82,7 +82,7 @@ export const sheetsRepository = {
       }
 
       // データ行を作成
-      const row =  [
+      const row = [
         mentorName,
         email,
         posse,
@@ -91,7 +91,7 @@ export const sheetsRepository = {
         availableCapacity,
         formatSlotsForDisplay(slots),
         submittedAt,
-      ];;
+      ];
 
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({
