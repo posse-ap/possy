@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { listSurveys } from "./listSurveys";
 
+vi.mock("@/libs/supabaseClient");
+vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/surveyRepository");
 
 const { surveyRepository } = await import(

@@ -2,9 +2,17 @@ import type { MentorResponseInput } from "@/models/mentorResponse/mentorResponse
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { submitMentorResponse } from "./submitMentorResponse";
 
+vi.mock("@/libs/supabaseClient");
+vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/surveyRepository");
+vi.mock("@/libs/supabaseClient");
+vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/mentorResponseRepository");
+vi.mock("@/libs/supabaseClient");
+vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/googleCalendar/calendarRepository");
+vi.mock("@/libs/supabaseClient");
+vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/googleSheets/sheetsRepository");
 
 const { surveyRepository } = await import(

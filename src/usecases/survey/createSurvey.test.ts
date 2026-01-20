@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { SurveyInput } from "@/models/survey/survey";
 import { createSurvey } from "./createSurvey";
 
+vi.mock("@/libs/supabaseClient");
+vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/surveyRepository");
 
 const { surveyRepository } = await import(
