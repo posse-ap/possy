@@ -5,11 +5,7 @@ import { submitMentorResponse } from "./submitMentorResponse";
 vi.mock("@/libs/supabaseClient");
 vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/surveyRepository");
-vi.mock("@/libs/supabaseClient");
-vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/mentorResponseRepository");
-vi.mock("@/libs/supabaseClient");
-vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/googleCalendar/calendarRepository");
 vi.mock("@/repositories/googleSheets/sheetsRepository");
 

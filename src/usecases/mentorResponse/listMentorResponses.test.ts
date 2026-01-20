@@ -1,12 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { Slot } from "@/models/slot/slot";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { listMentorResponses } from "./listMentorResponses";
 
 vi.mock("@/libs/supabaseClient");
 vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/persistence/mentorResponseRepository");
-vi.mock("@/libs/supabaseClient");
-vi.mock("@/libs/supabaseServer");
 vi.mock("@/repositories/googleSheets/sheetsRepository");
 
 const { mentorResponseRepository } = await import(
