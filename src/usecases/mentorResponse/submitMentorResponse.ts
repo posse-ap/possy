@@ -103,7 +103,7 @@ export async function submitMentorResponse(
           slot.date,
           slot.startTime,
           slot.endTime,
-          `[仮押さえ] ${input.mentorName} - ${survey.title}`,
+          `[チービル会候補日]`,
           accessToken,
         );
 
