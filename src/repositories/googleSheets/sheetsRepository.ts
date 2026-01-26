@@ -3,7 +3,7 @@ import type { Slot } from "@/models/slot/slot";
 import { formatSlotsForDisplay } from "@/models/slot/slotFormat";
 import type { AvailableCapacity, Generation, Posse } from "@/types/posse";
 
-type SpreadsheetRow = {
+export type SpreadsheetRow = {
   mentorName: string;
   date: string;
   startTime: string;
@@ -82,7 +82,7 @@ export const sheetsRepository = {
       }
 
       // データ行を作成
-      const row =  [
+      const row = [
         mentorName,
         email,
         posse,
@@ -91,7 +91,7 @@ export const sheetsRepository = {
         availableCapacity,
         formatSlotsForDisplay(slots),
         submittedAt,
-      ];;
+      ];
 
       // スプレッドシートに追加
       await sheets.spreadsheets.values.append({

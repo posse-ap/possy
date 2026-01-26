@@ -22,7 +22,6 @@ export async function GET(request: Request) {
       data: { session },
     } = await supabase.auth.getSession();
 
-
     const { accessToken, refreshToken } =
       await getAccessTokenFromSession(session);
 
@@ -46,13 +45,17 @@ export async function GET(request: Request) {
       refreshToken || undefined,
     );
 
-
     return NextResponse.json({ events });
   } catch (error) {
     console.error("Error fetching calendar events:", error);
-    
+
     // 401エラーの場合は認証エラーとして処理
-    if (error && typeof error === 'object' && 'code' in error && error.code === 401) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === 401
+    ) {
       return NextResponse.json(
         {
           error: "Token expired or invalid",
@@ -62,7 +65,7 @@ export async function GET(request: Request) {
         { status: 401 },
       );
     }
-    
+
     return NextResponse.json(
       {
         error: "Failed to fetch calendar events",

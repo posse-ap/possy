@@ -40,16 +40,20 @@ export const calendarRepository = {
       const events = response.data.items || [];
 
       return events
-        .filter((event) => event.start && event.end && event.eventType !== "workingLocation")
+        .filter(
+          (event) =>
+            event.start && event.end && event.eventType !== "workingLocation",
+        )
         .map((event) => {
-          const startDateTime = event.start?.dateTime || event.start?.date || "";
+          const startDateTime =
+            event.start?.dateTime || event.start?.date || "";
           const endDateTime = event.end?.dateTime || event.end?.date || "";
           // ISO 8601形式から日付と時刻を抽出（JSTで処理）
           const startDate = new Date(startDateTime);
           const endDate = new Date(endDateTime);
           // UTCからJSTに変換
-          const jstStart = new Date(startDate.getTime() + (9 * 60 * 60 * 1000));
-          const jstEnd = new Date(endDate.getTime() + (9 * 60 * 60 * 1000));
+          const jstStart = new Date(startDate.getTime() + 9 * 60 * 60 * 1000);
+          const jstEnd = new Date(endDate.getTime() + 9 * 60 * 60 * 1000);
           return {
             id: event.id || "",
             title: event.summary || "(タイトルなし)",

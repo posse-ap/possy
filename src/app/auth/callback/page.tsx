@@ -10,7 +10,8 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleAuth = async () => {
-      const next = searchParams.get("next") ?? searchParams.get("returnUrl") ?? "/";
+      const next =
+        searchParams.get("next") ?? searchParams.get("returnUrl") ?? "/";
       const code = searchParams.get("code");
       const hashParams = new URLSearchParams(
         window.location.hash.startsWith("#")

@@ -43,18 +43,15 @@ export async function submitMentorResponse(
       );
 
     // 4. DB保存（upsert: 既存なら更新、なければ作成）スロット情報込み
-    const savedResponse = await mentorResponseRepository.upsert(
-      surveyId,
-      {
-        mentorName: input.mentorName,
-        email: input.email,
-        posse: input.posse,
-        university: input.university,
-        generation: input.generation,
-        availableCapacity: input.availableCapacity,
-        slots: input.slots,
-      },
-    );
+    const savedResponse = await mentorResponseRepository.upsert(surveyId, {
+      mentorName: input.mentorName,
+      email: input.email,
+      posse: input.posse,
+      university: input.university,
+      generation: input.generation,
+      availableCapacity: input.availableCapacity,
+      slots: input.slots,
+    });
 
     if (!savedResponse) {
       return {
@@ -106,7 +103,7 @@ export async function submitMentorResponse(
           slot.date,
           slot.startTime,
           slot.endTime,
-          `[仮押さえ] ${input.mentorName} - ${survey.title}`,
+          `[チービル会候補日]`,
           accessToken,
         );
 
